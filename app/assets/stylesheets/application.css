@@ -1,0 +1,76 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ *= require bootstrap.min
+ *= require bootstrap-theme
+ */
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  background-color: #EAEAEA !important;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 40px 15px 40px;
+}
+.content{
+  padding:40px !important;
+  background-color: #FFFFFF;
+}
+
+code {
+  font-size: 80%;
+}
+
+.line-chart {
+  width: 100%;
+  height: 180px;
+  margin-top: 65px; 
+}
+
+div.metrics-wrapper{
+  border-radius: 5px;
+  border:solid 1px #EAEAEA;
+  width:100%;
+  margin-bottom: 10px;
+}
+table.metrics{
+  width:100%;
+}
+table.metrics tr td{
+  padding:40px;
+  text-align:center;
+  border-left:solid 1px #EEEEEE;
+}
+table.metrics tr td:first-child{ border:none; }
+
+.section{ margin-top: 20px; }
