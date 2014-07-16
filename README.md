@@ -1,6 +1,6 @@
 # Network Monitor
 
-![Network Monitor](screenshot.png)
+![Network Monitor](https://raw.githubusercontent.com/thomashs/network_monitor/master/screenshot.png)
 
 This is a really simple network monitor build with Rails and a Ruby `SNMP` (Simple Network Management Protocol) library to get some network traffic information. It's your to play around / copy or distribute :)
 
