@@ -1,0 +1,307 @@
+<%= render partial: 'modal_confirmation_bill' %>
+<%= render partial: 'modal_confirmation_card' %>
+<%= render partial: 'modal_confirmation_money' %>
+
+<div class="page--payment">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Compra</h1>
+    </div>
+  </div>
+
+  <div class="checkout-flow">
+    <div class="wrap">
+      <ul class="checkout-flow--steps">
+        <li class="done">Identificação<br><br></li>
+        <li class="done">Resumo do Pedido</li>
+        <li class="active">Forma de Pagamento</li>
+        <li class="next">Confirmação do Pedido</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="payment-column">
+      <span class="payment-method--icon icon-credit"></span>
+      <span class="pay-with">Pague com</span>
+      <h2>Cartão de crédito</h2>
+      <h4>Selecione o cartão:</h4>
+
+      <div class="radio-container money-method--container card-method--container">
+        <label class="money-method--bank-brand card-method--bank-brand">
+          <input type="radio" name="pay-bank" checked value="Visa">
+          <span class="custom-radio"></span>
+          <span class="bank-brand--mini bank-brand--visa-mini"></span>
+        </label>
+
+        <label class="money-method--bank-brand card-method--bank-brand">
+          <input type="radio" name="pay-bank" value="Mastercard">
+          <span class="custom-radio"></span>
+          <span class="bank-brand--mini bank-brand--master-mini"></span>
+        </label>
+
+        <label class="money-method--bank-brand card-method--bank-brand">
+          <input type="radio" name="pay-bank" value="Diners">
+          <span class="custom-radio"></span>
+          <span class="bank-brand--mini bank-brand--diners-mini"></span>
+        </label>
+
+        <label class="money-method--bank-brand card-method--bank-brand">
+          <input type="radio" name="pay-bank" value="Hipercard">
+          <span class="custom-radio"></span>
+          <span class="bank-brand--mini bank-brand--hiper-mini"></span>
+        </label>
+
+        <label class="money-method--bank-brand card-method--bank-brand">
+          <input type="radio" name="pay-bank" value="AmericanExpress">
+          <span class="custom-radio"></span>
+          <span class="bank-brand--mini bank-brand--american-mini"></span>
+        </label>
+      </div>
+
+      <form action="" class="payment-card--form">
+        <label for="">Número do cartão</label>
+        <input id="ccnumber" type="text" class="full" required>
+
+        <label for="">Nome do titular <span class="hint">(Como está gravado no cartão)</span></label>
+        <input id="ccname" type="text" class="full" required>
+
+        <div class="method--form-col pull-left">
+          <label for="">Data de validade</label>
+          <input id="ccdate" type="text" class="input--card-exp-date full" required>
+        </div>
+
+        <div class="method--form-col pull-right">
+          <label for="">Cód de segurança <span class="hint hint--security-code">(?)</span></label>
+          <input id="cccode" type="number" class="input--security-code full" maxlength="4" required>
+        </div>
+
+        <label for="">Opções de parcelamento</label>
+        <select class="full" id="installments">
+          <% calculator = PaymentCalculator.new(@order.the_total) %>
+          <%= @order.max_installments.times do |i| %>
+          <% i = i+1 %>
+          <option value="<%= i %>"><%= i %>x de <%= number_to_currency(calculator.installment_price(i)) %></option>
+          <% end %>
+        </select>
+
+        <label for="">Endereço de cobrança</label>
+        <%= select_tag :payment_user_address_id, options_from_collection_for_select(current_user.user_addresses,:id,:name,session[:payment_user_address_id].to_i), :class => "full" %>
+        <div class="checkout-add-address">
+          Não cadastrou o endereço de cobrança?
+          <%= link_to "Adicionar endereço", checkout_add_address_path %>
+        </div>
+
+      </form>
+      <button type="button" class="button bigger orange" onclick="javascript: pay_with_credit_card();">Efetuar pagamento</button>
+    </section>
+
+    <section class="payment-column">
+      <span class="payment-method--icon icon-barcode"></span>
+      <span class="pay-with">Pague com</span> 
+      <h2>Boleto bancário</h2>
+      <p>Você poderá visualizar ou imprimir após a finalização do pedido. A data de vencimento é de 4 dias corridos após a conclusão do pedido. Após esta data, ele perderá a validade.</p>
+      
+      <div class="payment-method--value">
+        <% if NutrisuporteSetting.boleto_discount > 0 %>
+        <span class="discount-value"><b><%= NutrisuporteSetting.boleto_discount %>%</b> <small>de desconto</small></span>
+        <s class="old-value">de <%= number_to_currency(@order.the_total) %></s>
+        <span><i>por</i><% end %> <b class="new-price"><%= number_to_currency(PaymentCalculator.new(@order.the_total).boleto_price) %></b></span>
+      </div>
+      <button type="button" class="button bigger orange" onclick="javascript: pay_with_boleto();">Gerar boleto</button>
+    </section>
+
+    <section class="payment-column">
+      <span class="payment-method--icon awesome-money"></span>
+      <span class="pay-with">Pague com</span> 
+      <h2>Depósito bancário</h2>
+      <p>Ao selecionar o banco de sua preferência, serão apresentados os dados bancários para sua anotação. Após anotá-los, clique em “comprar por depósito” e receba-os também em seu e-mail de confirmação da compra.</p>
+      <p>Favor efetuar o depósito bancário no valor de seu pedido. Em até 24 horas, teremos a informação do seu pagamento e seu pedido será prontamente enviado.</p>
+      
+      <h4>Bancos disponíveis:</h4>
+      <div class="radio-container money-method--container">
+        <label class="money-method--bank-brand">
+          <input type="radio" name="pay-bank" value="banrisul">
+          <span class="custom-radio"></span>
+          <span class="bank-brand bank-brand--banrisul"></span>
+        </label>
+
+        <label class="money-method--bank-brand">
+          <input type="radio" name="pay-bank" value="banco-br">
+          <span class="custom-radio"></span>
+          <span class="bank-brand bank-brand--banco-br"></span>
+        </label>
+
+        <section>
+          <div class="brand--data brand-banrisul--data">
+            <span class="brand-data--title">Agência</span><br> 0070<br> 
+            <span class="brand-data--title">Conta</span><br> 06089692.0-4<br/>
+          </div>
+          <div class="brand--data brand-banco-br--data">
+            <span class="brand-data--title">Agência</span><br> 3876-8<br> 
+            <span class="brand-data--title">Conta</span><br> 21246-6
+          </div>
+        </section>
+      </div>
+
+      <div class="payment-method--value">
+        <% if NutrisuporteSetting.debit_discount > 0 %>
+        <span class="discount-value"><b><%= NutrisuporteSetting.debit_discount %>%</b> <small>de desconto</small></span>
+        <s class="old-value">de <%= number_to_currency(@order.the_total) %></s>
+        <span><i>por</i> <% end %><b class="new-price"><%= number_to_currency(PaymentCalculator.new(@order.the_total).deposit_price) %></b></span>
+      </div>
+      <button type="button" class="button bigger orange" onclick="javascript: pay_with_deposit();">Comprar por depósito</button>
+    </section>
+  </div>
+</div> 
+
+<div id="moip-div">
+  <div id="MoipWidget"
+    data-token=""
+    callback-method-success="paymentSucess"
+    callback-method-error="paymentFail"></div>
+</div>
+
+<% content_for :js do %>
+<%= @moip.javascript_tag.html_safe %>
+<script type="text/javascript">
+  
+  /*
+    'Cartão de Crédito' => '1', 
+    'Boleto' => '2', 
+    'Depósito Bancário' => '3', 
+    'Outro' => '4' 
+  */
+
+  var payment_method = "";
+
+  var modal_options = { 
+    closeOnEscape : false,
+    backdrop: 'static'
+  };
+
+  function get_value(id){
+    return $(id).val();
+  }
+  
+  function set_moip_token(value){
+    $("#MoipWidget").attr("data-token",value);
+  }
+
+  function get_token(payment_method,success,payment_user_address_id){
+    var data_call = { 
+        payment_method : payment_method, 
+        payment_user_address_id : payment_user_address_id 
+    };
+    if(payment_method == "1"){
+      data_call['payments'] = get_value("#installments");
+    }
+    $.ajax({
+      url : "<%= checkout_payment_get_token_path %>",
+      data : data_call,
+      success : function(data){
+        if(data["status"] == "ok"){
+          set_moip_token(data["token"]);
+          success();
+        } else {
+          var str = "";
+          $.each(data,function(i,elem){
+            str += "- " + elem + "\n";
+          });
+          alert(str);
+          console.log(data);
+          $.loader.close();
+        }
+      }
+    });
+  }
+
+  function pay_with_credit_card(){
+    $.loader.open();
+    payment_method = "1";
+    get_token(payment_method,pay_with_credit_card2,get_value("#payment_user_address_id"));
+  }
+
+  function pay_with_credit_card2(){
+    MoipWidget({ 
+      "Forma": "CartaoCredito",
+      "Instituicao": get_value("input[name='pay-bank']"),
+      "Parcelas": get_value("#installments"),
+      "CartaoCredito": {
+        "Numero": get_value("#ccnumber"),
+        "Expiracao": get_value("#ccdate"),
+        "CodigoSeguranca": get_value("#cccode"),
+        "Portador": {
+          "Nome": get_value("#ccname"),
+          "DataNascimento" : "<%= I18n.l current_user.birth_date %>",
+          "Telefone" : "<%= current_user.phone %>",
+          "Identidade" : "<%= current_user.cpf %>"
+        }
+      }
+    }); 
+  }
+
+  function pay_with_boleto(){
+    $.loader.open();
+    payment_method = "2";
+    get_token(payment_method,pay_with_boleto2);
+  }
+
+  function pay_with_boleto2(){
+    MoipWidget({ "Forma" : "BoletoBancario" });
+  }
+
+  function pay_with_deposit(){
+    payment_method = "3"; 
+    $.loader.open();
+    $.ajax({
+      url: "<%= checkout_payment_deposit_path %>",
+      success : function(data){
+        if(data == true){
+          paymentSucess(data);
+        } else {
+          paymentFail(data);
+        }
+      }
+    })
+  }
+
+  function paymentSucess(data){
+    $.loader.close();
+    clear_cart();
+    console.log(data);
+    if(data["CodigoMoIP"]){
+      $(".codigo-moip").html("Código Moip:<br/> <span>" + data["CodigoMoIP"] + "</span>");
+    }
+
+    if(payment_method == "1"){ // Credit Card
+      $("#confirmation-card-modal").modal(modal_options);
+    } else if(payment_method == "2"){ // Boleto
+      $("#confirmation-bill-modal").modal(modal_options);
+      $("a.boleto-url").attr("href",data["url"]);
+      window.open(data["url"],'janela', 'width=600, height=600, top=0, left=0, scrollbars=yes, status=no, toolbar=no, location=no, directories=no, menubar=no, resizable=no, fullscreen=no');
+    } else if(payment_method == "3"){ // Deposit
+      $("#confirmation-money-modal").modal(modal_options);
+    }
+  }
+  
+  function paymentFail(data){
+    $.loader.close();
+    var str = "";
+    if(typeof(data) == "string"){
+      str = data;
+    } else {
+      $.each(data,function(i,e){
+        str += e;
+      });
+    }
+    console.log(data);
+    alert("Erro: " + str);
+  }
+
+  function clear_cart(){
+    $.ajax({ url: "<%= cart_clear_path %>" });
+  }
+
+</script>
+<% end %>

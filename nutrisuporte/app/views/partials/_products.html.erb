@@ -1,0 +1,22 @@
+<ul class="products-list">
+  <% products.each do |product| %>
+  <li class="products-list--item">
+    <%= product_badge(product) %>
+    <%= link_to product_path(product.url) do %>
+    <%= image_tag product.image.url(:thumb), :class => "product-item--img", :alt => product.name %>
+    <% end %>
+    <%= link_to product_path(product.url) do %>
+    <h2 class="product-item--title"><%= product.name %> <% if product.subtitle.present? %>(<%= product.subtitle %>)<% end %></h2>
+    <% end %>
+    <% if product.is_deal %>
+    <p class="original_price">De <%= number_to_currency(product.original_price) %> por</p>
+    <% end %>
+    <span class="price">
+      <small class="highlight">R$</small> 
+      <span class="value highlight"><%= product.price.to_s.split('.')[0] %><small>,<%= product.price.to_s.split('.')[1].ljust(2,"0") %></small></span> 
+      <small class="as-block">ou <%= product.max_payments_display %>x de <%= number_to_currency(product.payment_price(product.max_payments_display)) %></small>
+    </span>
+    <button type="button" class="button orange button--buy" onclick="javascript:window.location = '<%= product_path(product.url) %>'">Comprar <span class="icon-cart"></span></button>
+  </li>
+  <% end %>
+</ul>

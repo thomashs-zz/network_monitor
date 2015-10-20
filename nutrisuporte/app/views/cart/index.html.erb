@@ -1,0 +1,156 @@
+<% content_for :header do %>
+<%= stylesheet_link_tag "lightbox" %>
+<% end %>
+
+<div class="page--checkout-cart">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1><span class="icon-cart"></span> Carrinho</h1>
+    </div>
+  </div>
+
+  <section class="wrap-content page--default">
+    <% if @products.any? %>
+    <% total = 0 %>
+    <div class="responsive-table">
+    <table class="table--default">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="cart--product-info-th"><span>Produto</span></th>
+          <th><span>Quantidade</span></th>
+          <th><span>Sabor</span></th>
+          <th><span>Valor Unitário</span></th>
+          <th><span>Valor Total</span></th>
+          <th><span>Remover</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @products.each do |product_type| %>
+        <% product = product_type.product %>
+        <tr class="cart--product-item">
+          <td class="cart--product-image">
+            <a href="<%= product.image.url(:medium) %>" data-lightbox="image-<%= product.id %>" data-title="<%= product.name %> (<%= product.subtitle %>)">
+              <%= image_tag(product.image.url(:thumb), alt: product.name, "width" => 80) %>
+            </a>
+          </td>
+          <td class="cart--product-info">
+            <%= link_to product_path(product.url) do %>
+              <h2 class="product-item--title">
+                <%= product.name %><% if product.subtitle.present? %> (<%= product.subtitle %>)<% end %>
+              </h2>
+            <% end %>
+            <p>
+              <b>Categoria:</b> <%= product.product_category.name %> <br>
+              <b>Fabricante:</b> <%= product.brand.name %><br/>
+            </p>
+          </td>
+          <td>
+            <div class="product-cart--item product-quantity">
+              <input type="text" value="<%= @cart[product_type.id.to_s] %>" class="qty quantity-field" product-type-id="<%= product_type.id %>">
+              <div class="quantity-buttons">
+                <button type="button" class="add quantity-button">+</button>
+                <button type="button" class="minus quantity-button">-</button>
+              </div>
+            </div>
+          </td>
+          <td><%= product_type.name %></td>
+          <td><%= number_to_currency(product.price) %></td>
+          <td class="product-cart--total">
+            <% product_total = (product.price * @cart[product_type.id.to_s].to_i) %>
+            <% total += product_total %>
+            <% total_split = product_total.to_s.split('.') %>
+            <small class="mini">R$</small> <%= total_split[0] %><small>,<%= total_split[1].ljust(2,"0") %></small>
+          </td>
+          <td>
+            <%= link_to("remover",cart_remove_path(product_type), :class => "red", :onclick => "javascript: return confirm('Tem certeza?');") %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+    <div class="product-cart--cep">
+      <label for="cart-cep" class="text-highlight">Calcular Frete:</label>
+      <input type="text" name="cart-cep" id="cart-cep" class="input--product-cep input--cep" placeholder="Insira seu CEP" value="<%= session[:cep].to_s %>" />
+      <button type="button" class="button small calculate_shipping" onclick="javascript:calculate_shipping();">Calcular</button>
+      <a href="//www.buscacep.correios.com.br" target="_blank" class="dont-know-cep">Não sei meu CEP</a>
+      <div id="shipping-options"></div>
+      <table class="table--default table--cart-cep pull-right">
+        <tr><td></td></tr>
+        <tr>
+          <td colspan="4" class="final-values total text-right">
+            <% total_split = total.to_s.split('.') %>
+            Total: <small>R$ </small><span id="the_price"><span class="price"><%= total_split[0] %><small>,<%= total_split[1].rjust(2,"0") %></small></span></span>
+            <div class="cart--buttons">
+              <%= link_to "Continuar Comprando", root_path, :class => "button big" %>
+              <%= link_to "Concluir compra", checkout_path, :class => "button bigger orange", :onclick => "javascript:return check_shipping();" %>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <% else %>
+    <div class="alert">
+      Seu carrinho está vazio.
+    </div>
+    <% end %>
+  </section>
+</div>
+<% content_for :js do %>
+<%= javascript_include_tag "lightbox.min" %>
+<script type="text/javascript">
+  var total = <%= total %>;
+  function calculate_shipping(){
+    var cep = $("#cart-cep").val();
+    if(cep.toString() != ""){
+      $("#shipping-options").load("<%= cart_shipping_selector_path %>?cep="+cep,function(){
+      <% if session[:shipping_option] %>
+        $("input[value='<%= session[:shipping_option] %>']").click();
+      <% end %>  
+      });
+    }
+    else
+      alert("insira um cep para calcular o frete");
+  }
+  function select_shipping_option(object){
+    // mostrar preço do frete
+    var shipping_price_split = $(object).attr("price").toString().split('.');
+    $("#shipping-price").html("<span class='price'>"+shipping_price_split[0]+"<small>,"+(shipping_price_split[1] ? (shipping_price_split[1].length == 1 ? shipping_price_split[1] + "0" : shipping_price_split[1]) : "00")+"</small></span>");
+    // mostra preço total
+    var total_split = (total + parseFloat($(object).attr("price"))).toFixed(2).toString().split('.');
+    var split_2 = "";
+    if(total_split[1])
+      if(total_split[1].length == 1)
+        split_2 = total_split[1] + "0";
+      else
+        split_2 = total_split[1];
+    else
+      split_2 = "00";
+    $("#the_price").html("<span class='price'>"+total_split[0]+"<small>,"+(split_2)+"</small>");
+    $.ajax({ url: "<%= save_shipping_option_path %>?shipping_option=" + $(object).val() });
+  }
+  $(function(){
+    $(".qty").change(function(){
+      var elem = $(this);
+      $.ajax({
+        url: "<%= cart_set_qty_path %>",
+        data: { 
+          product_type_id : elem.attr("product-type-id"),
+          qty : elem.val()
+        },
+        success : function(){ 
+          window.location = window.location; 
+        }
+      });
+    });
+    calculate_shipping();
+  });
+  function check_shipping(){
+    if($("input[name='shipping_option']:checked").length == 0){
+      alert("selecione uma maneira de transporte");
+      return false;
+    }
+  }
+</script>
+<% end %>

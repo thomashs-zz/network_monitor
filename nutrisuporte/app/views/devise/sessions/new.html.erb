@@ -1,0 +1,21 @@
+<div class="page--sign-up">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Login</h1>
+    </div>
+  </div>
+  <section class="wrap">
+    <section class="login--form">
+      <p>Faça seu login para efetuar a compra:</p>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), :id => "login") do |f| %>
+        <%= f.email_field :email, autofocus: true, :placeholder => "e-mail", :class => "full" %>
+        <%= f.password_field :password, autocomplete: "off", :placeholder => "senha", :class => "full" %>
+        <% if devise_mapping.rememberable? %>
+        <label class="control-label"><%= f.check_box :remember_me %> Lembre-se de mim</label>
+        <% end %>
+        <%= f.submit "Log in", :class => "button pull-right" %>
+      <% end %>
+    </section>
+    <%= render "devise/shared/links" %>
+  </section>
+</div>

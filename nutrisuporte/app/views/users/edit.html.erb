@@ -1,0 +1,117 @@
+<div class="page--sign-up">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Meu Cadastro</h1>
+    </div>
+  </div>
+
+  <section class="wrap">
+
+    <%= nested_form_for(@user, url: update_user_account_path, html: { :id => "sign-up" }) do |f| %>
+      <%= custom_error_messages_for(@user) %>
+
+      <section class="login--acc-data">
+        <h3 class="section--title">Dados de Login</h3>
+        <fieldset>
+          <%= f.email_field :email, autofocus: true, :placeholder => "e-mail", :class => "full", :required => true %>
+          <p>Se você quiser alterar sua senha, digite a nova senha abaixo.</p>
+          <%= f.password_field :password, autocomplete: "off", :placeholder => "senha", :class => "full" %>
+        </fieldset>
+      </section>
+
+      <section class="login--personal-data">
+       <h3 class="section--title">Dados Pessoais</h3>
+
+        <div class="radio-container person-type">
+          <label>
+            <%= f.radio_button :user_type, "fisica" %>
+            <span class="custom-radio"></span>
+            <span>Pessoa Física</span>
+          </label>
+
+          <label>
+            <%= f.radio_button :user_type, "juridica" %>
+            <span class="custom-radio"></span>
+            <span>Pessoa Jurídica</span>
+          </label>
+        </div>
+
+        <fieldset>
+          <div  class="form--natural-person">
+            <%= f.text_field :name, :class => "full", :placeholder => "nome", :required => true %>
+            <%= f.text_field :cpf, :class => "full", :placeholder => "CPF", :required => true, :class => "input--cpf mini" %>
+            <%#= f.text_field :birth_date, :class => "input--date divider", :placeholder => "data de nascimento", :required => true, :class => "input--date divider" %>
+            <input type="text" placeholder="data de nascimento" name="user[birth_date]" value="<%= I18n.l @user.birth_date if @user.birth_date %>" class="input--date divider" required>
+            <section class="gender">
+              <span class="label-highlight">Sexo:</span>
+              <div class="radio-container in-fieldset">
+                <label>
+                  <%= f.radio_button :gender, "m" %>
+                  <span class="custom-radio"></span>
+                  <span>Masculino</span>
+                </label>
+                <label>
+                  <%= f.radio_button :gender, "f" %>
+                  <span class="custom-radio"></span>
+                  <span>Feminino</span>
+                </label>
+              </div>
+            </section>
+          </div>
+          <div class="form--legal-person">
+            <%= f.text_field :company_name, :class => "full", :placeholder => "Razão Social", :required => true, :class => "full" %>
+            <%= f.text_field :cnpj, :class => "full", :placeholder => "CNPJ", :required => true, :class => "input--cnpj full" %>
+            <%= f.text_field :state_registration, :class => "full", :placeholder => "Inscrição Estadual", :required => true, :class => "full" %>
+          </div>
+          <%= f.text_field :phone, :class => "full", :placeholder => "Telefone Fixo", :required => true, :class => "input--phone full" %>
+          <%= f.text_field :mobile, :class => "full", :placeholder => "Telefone Celular", :required => true, :class => "input--phone full" %>
+        </fieldset>
+
+      </section>
+
+      <section class="login--address">
+        <h3 class="section--title">Endereço</h3>
+        <% i = 0 %>
+        <%= f.fields_for :user_addresses do |ff| %>
+        <% x = ff.options[:child_index] ? ff.options[:child_index] : i %>
+        <%= ff.text_field :cep, :class => "input--cep full", :required => true, :placeholder => "cep", :cep_target_id => "user_address-#{x}" %>
+        <a href="//www.buscacep.correios.com.br" target="_blank" class="dont-know-cep">Não sei meu CEP</a>
+        <fieldset id="user_address-<%= x %>">
+          <%= ff.text_field :name, :class => "full", :required => true, :placeholder => "nome do endereço, ex: casa, escritório.." %>
+          <label class="control-label"><%= ff.check_box :is_default %> Endereço principal</label>
+          <%= ff.text_field :address, :class => "full endereco", :required => true, :placeholder => "endereço" %>
+          <%= ff.number_field :number, :class => "mini numero", :required => true, :placeholder => "número" %>
+          <input type="text" placeholder="complemento" name="user[user_addresses_attributes][<%= x %>][complement]" class="divider complemento" value="<%= ff.object.complement %>">
+          <%= ff.text_field :neighbourhood, :class => "full bairro", :required => true, :placeholder => "bairro" %>
+          <%= ff.text_field :city, :class => "mid cidade", :required => true, :placeholder => "cidade" %>
+          <%= ff.select :state, options_for_select(BrazilianStates.list,ff.object.state), {}, :class => "divider uf" %>
+          <% if ff.object.persisted? %>
+          <label class="control-label"><%= ff.check_box :_destroy %> Remover este endereço</label>
+          <% else %>
+          <%= ff.link_to_remove "Remover", :class => "button" %>
+          <% end %>
+        </fieldset>
+        <hr/>
+        <% i += 1 %>
+        <% end %>
+        <%= f.link_to_add "Adicionar Endereço", :user_addresses, :class => "button big" %>
+        <br/><br/>
+        <%= f.submit "Alterar Dados", :class => "button big pull-right" %>
+      </section>
+
+    <% end %>
+  </section>
+</div>
+<%= content_for :js do %>
+<script type="text/javascript">
+  $(function(){
+    $(document).on("nested:fieldAdded",function(){
+      $('.input--cep').mask('99999-999');
+      config_cep();
+    });
+    $(document).on("nested:fieldRemoved",function(event){
+      event.field.find("input").attr("required",false);
+    });
+  });
+</script>
+<% end %>

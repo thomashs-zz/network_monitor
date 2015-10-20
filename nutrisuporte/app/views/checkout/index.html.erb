@@ -1,0 +1,121 @@
+<div class="page--order-summary">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Compra</h1>
+    </div>
+  </div>
+
+  <div class="checkout-flow">
+    <div class="wrap">
+      <ul class="checkout-flow--steps">
+        <li class="done">Identificação<br><br></li>
+        <li class="active">Resumo do Pedido</li>
+        <li class="next">Forma de Pagamento</li>
+        <li class="next">Confirmação do Pedido</li>
+      </ul>
+    </div>
+  </div>
+
+  <% items_not_available = 0 %>
+
+  <section class="wrap">
+    <div class="">
+      <h3>Resumo do Pedido</h3>
+      <% if @shipping_option.days > 0 %>
+      <h4>Endereço de entrega</h4>
+      <% @user_addresses.each do |address| %>
+        <div class="radio-container">
+          <label>
+            <input type="radio" name="address" <%= "checked" if session[:user_address_id].to_s == address.id.to_s %> onclick="javascript:(this);" value="<%= address.id %>">
+            <span class="custom-radio"></span>
+            <%= address.name %>
+          </label>
+        </div>
+        <div class="address-container">
+          <%= address.address %>, <%= address.number %> <%= "- #{address.complement}" if address.complement %><br>
+          Bairro: <%= address.neighbourhood %><br>
+          Cidade: <%= address.city %> - <%= address.state %><br>
+          CEP: <%= address.cep %> 
+        </div>
+      <hr>
+      <% end %>
+      <%= link_to "Alterar Endereço de Entrega", checkout_change_address_path, :class => "switch-address highlight" %><br/>
+      <hr/>
+      <% end %>
+      <% total = 0 %>
+      <div class="responsive-table">
+      <table class="table--simple">
+        <thead>
+          <th><h4>Itens do Pedido</h4></th>
+          <th><h4>Quantidade</h4></th>
+          <th><h4>Sabor</h4></th>
+          <th><h4>Valor Unitário</h4></th>
+        </thead>
+        <tbody>
+          <% @products.each do |product_type| %>
+          <% product = product_type.product %>
+          <% qty = @cart[product_type.id.to_s].to_i %>
+          <% total += product.price * qty %>
+          <tr>
+            <td class="highlight"><%= link_to product.name, product_path(product.url) %> <% if product.subtitle.present? %>(<%= product.subtitle %>)<% end %></td>
+            <td>
+              <%= qty.to_s.rjust(2,"0") %>
+              <% if product_type.qty < qty %>
+              <% items_not_available += 1 %>
+              <span class="red">(Este ítem não está disponível na quantidade desejada!)</span>
+              <% end %>
+            </td>
+            <td><%= product_type.name %></td>
+            <td><b><%= number_to_currency(product.price) %></b></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="container--full-cleared">
+    <hr>
+
+    <section class="wrap-content">
+      <h4>Forma de entrega</h4>
+      <%= @shipping_option.name %><%= " (#{@shipping_option.message})" if @shipping_option.message.present? %>
+      <% if @shipping_option.days > 0 %>(<%= pluralize(@shipping_option.days,"dia útil","dias úteis") %>) <b><%= number_to_currency(@shipping_option.price) %></b><% end %>
+    </section>
+  </div>
+
+  <hr>
+
+  <section class="wrap">
+    <div class="summary--total-price">
+      <b>total:</b> <span class="price"><%= number_to_currency(total + @shipping_option.price) %></span>
+    </div>
+    <br/>
+    <%= link_to "Finalizar Compra", checkout_payment_path, :class => "pull-right button biggest", :onclick => "javascript:return validate_form();" %>
+  </section>
+</div>
+
+<% content_for :js do %>
+<script type="text/javascript">
+  
+  var items_not_available = <%= items_not_available %>;
+
+  function validate_form(){
+    if($("input[name='address']").length > 0 && $("input[name='address']:checked").length == 0){
+      alert("Selecione um endereço");
+      return false;
+    } else if(items_not_available > 0){
+      alert("Você não pode continuar a compra pois há itens indisponíveis no seu carrinho na quantidade solicitada!");
+      return false;
+    } else {
+      return true;
+    }
+  }
+  $(function(){
+    $("input[name='address']").click(function(){
+      $.ajax({ url: "<%= checkout_save_user_address_id_path %>?user_address_id=" + $(this).val() });
+    });
+  });
+</script>
+<% end %>

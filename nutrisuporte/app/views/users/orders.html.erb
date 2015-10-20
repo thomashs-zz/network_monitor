@@ -1,0 +1,41 @@
+<div class="page--orders">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Meus Pedidos</h1>
+    </div>
+  </div>
+
+  <section class="wrap-content page--default">
+    <% if @orders.empty? %>
+    <div class="alert">
+      Você ainda não comprou
+    </div>
+    <% else %>
+    <div class="responsive-table">
+    <table class="table--default">
+      <thead>
+        <tr>
+          <th><span>Número do Pedido</span></th>
+          <th><span>Status</span></th>
+          <th><span>Data</span></th>
+          <th><span>Valor</span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+        <tr>
+          <td><h2 class="product-item--title"><%= link_to order.the_id, user_order_path(order.id) %></h2></td>
+          <td><%= Order.status_types.invert[order.status] %></td>
+          <td><%= I18n.l order.created_at %></td>
+          <td><%= number_to_currency(order.the_total) %></td>
+          <td><%= link_to "ver detalhes", user_order_path(order.id), :class => "highlight orange" %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+    <% end %>
+
+  </section>
+</div>

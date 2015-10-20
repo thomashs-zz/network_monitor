@@ -1,0 +1,95 @@
+* admins
+
+* blog_posts
+	- titulo
+	- is_draft
+	- image
+	- content
+	- slug
+
+* brands
+	- name
+	- is_available
+
+* categories
+	- name
+	- slug
+	- category_id
+	- relevance
+
+* users
+	- person_type (fisica juridica)
+	- cpf
+	- cnpj
+	- name
+	- email
+	- phone
+	- mobile
+	- gender (m / f)
+	- birth_date
+	- password
+	- created_at (dta_cadastro)
+	- news_email (boolean)
+
+* user_addresses
+	- user_id
+	- is_default
+	- name
+	- address
+	- neighbourhood
+	- cep
+	- city
+	- state
+
+* products
+	- brand_id
+	- category_id
+	- name
+	- description
+	- price
+	- original_price
+	- is_available
+	- is_featured
+	
+* product_type
+	- product_id
+	- qty
+	- weight
+	- description
+
+* orders
+	- user_id
+	- total
+	- total_shipping
+	- total_discount
+	- delivery_method (ENUM)
+	- status (ENUM)
+	- created_at
+	- canceled_date
+	- payment_date
+	- shipped_at
+	- payment_method
+	- nf_number (string)
+	- is_gift
+	- payment_name
+	- payment_address
+	- payment_neighbourhood
+	- payment_cep
+	- payment_city
+	- payment_state
+	- delivery_name
+	- delivery_address
+	- delivery_neighbourhood
+	- delivery_cep
+	- delivery_city
+	- delivery_state
+	
+* order_items
+	- order_id
+	- qty
+	- total
+	- discount_percentage
+	- product_name
+	- product_type
+
+----------------------

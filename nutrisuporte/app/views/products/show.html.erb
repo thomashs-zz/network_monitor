@@ -1,0 +1,153 @@
+<%= render partial: 'modal_request', locals: { product_id: @product.id, product_slug: @product.url } %>
+<div class="wrap page--default page--product">
+  <div class="sidebar">
+    <%= render partial: 'partials/categories' %>
+  </div>
+
+  <div class="content-side">
+    <section class="product-presentation">
+      <div class="product-image">
+        <a href="#" onclick="javascript:$('.buy-button-clickable').click();">
+          <%= image_tag @product.image.url(:medium) %>
+        </a>
+      </div>
+      <div class="product--side-info">
+
+        <div class="product-description">
+          <h1 class="product-title"><%= @product.name %>
+          <% if @product.subtitle.present? %><small>(<%= @product.subtitle %>)</small><% end %>
+          </h1>
+          <p><b>Categoria:</b> <%= link_to @product.product_category.name, product_category_path(@product.product_category.url) %> <br>
+          <b>Fabricante:</b> <%= link_to @product.brand.name, product_brand_path(@product.brand.url) %></p>
+        </div>
+
+        <% if @product.is_really_available %>
+        <%= form_tag cart_add_path do %>
+        <span class="text-highlight as-block">Selecione o tipo:</span>
+        <div>
+          <%= select_tag :product_type_id, options_from_collection_for_select(@product.product_types.available,:id,:name) %>
+        </div>
+        <!-- Se o produto estiver disponível -->
+        <span class="text-highlight as-block">Selecione a quantidade:</span>
+        <div class="product-quantity">
+          <input type="text" value="1" name="qty" class="qty quantity-field" id="product-detail-quant">
+          <div class="quantity-buttons product-detail-buttons">
+            <button type="button" class="add quantity-button">+</button>
+            <button type="button" class="minus quantity-button">-</button>
+          </div>
+        </div>
+        <% if @product.is_deal %>
+        <div class="product-original-price">
+          de <b id="original-price"><%= number_to_currency(@product.original_price) %></b> por
+        </div>
+        <% end %>
+        <div class="product-detail--buy">
+          <% price_split = @product.price.to_s.split('.') %>
+          <span class="price"><sup>R$</sup> <span class="price-left"><%= price_split[0] %></span><small class="unit">,<%= price_split[1].to_s.ljust(2,"0") %></small></span>
+          <%= submit_tag "Comprar", :class => "button biggest orange buy-button-clickable" %>
+        </div>
+        <div id="best-payment-price-wrapper">
+          <span id="best-payment-price"><%= number_to_currency(@product.best_payment_price) %></span> à vista
+        </div>
+        <% end %>
+        <form action="" class="product-detail--cep as--block">
+          <label for="cart-cep" class="text-highlight as-block">Calcular Frete:</label>
+          <input type="text" name="cart-cep" id="cart-cep" class="input--product-cep input--cep" placeholder="Insira seu CEP" value="<%= session[:cep] %>">
+          <button type="button" class="button small" onclick="javascript:calculate_shipping('#shipping-options',$('#product_type_id').val(),$('.qty').val(),$('#cart-cep').val());">Calcular</button>
+          <a href="//www.buscacep.correios.com.br" target="_blank" class="dont-know-cep">Não sei meu CEP</a>
+        </form>
+        <div id="shipping-options"></div>
+        <div id="total-calculator"></div>
+
+      <% else %>
+
+      <!-- Se o produto não estiver disponível -->
+      <p class="product-unavailable">Produto indísponível</p>
+      <a href="#" data-toggle="modal" data-target="#product-request-modal" class="button orange bigger">Avise-me quando chegar</a>
+      
+      <% end %>
+
+      </div>
+
+      <div class="product-info">
+        <%= @product.description.html_safe %>
+      </div>
+
+    </section>
+    
+    <% if @product.product_relateds.any? %>
+    <h2 class="page-product--title title--centered-bar">Produtos Relacionados</h2>
+    <section class="products">
+      <%= render partial: "partials/products", locals: { products: @product.product_relateds.collect{ |i| i.related } } %>
+    </section>
+    <% end %>
+  </div>
+</div>
+<% content_for :js do %>
+<%= javascript_include_tag "accounting" %>
+<script type="text/javascript">
+  
+  var original_price = <%= BigDecimal.new(@product.original_price.to_s).to_s %>;
+  var best_payment_price = <%= BigDecimal.new(@product.best_payment_price).to_s %>;
+
+  var price = <%= @product.price %>;
+  var qty = 0;
+  var cep = "<%= session[:cep] %>";
+  var current_shipping = "<%= session[:shipping_option] %>";
+
+  function set_total(price){
+    var total_split = price.toFixed(2).toString().split('.');
+    $("span.price-left").text(total_split[0]);
+    if(total_split[1]){
+      $("small.unit").text("," + (total_split[1].length == 1 ? total_split[1] + "0" : total_split[1]));
+    } else {
+      $("small.unit").text(",00")
+    }
+  }
+
+  function set_original_price(x){
+    $("#original-price").text(accounting.formatMoney(x)); 
+  }
+
+  function set_best_payment_price(x){
+    $("#best-payment-price").text(accounting.formatMoney(x));
+  }
+
+  function save_shipping_option(shipping_option){
+    $.ajax({ url: "<%= save_shipping_option_path %>?shipping_option=" + shipping_option });
+  }
+
+  function product_type_id(){
+    return $('#product_type_id').val();
+  }
+
+  function selected_shipping_option_price(){
+    return $("#shipping-options input[type='radio']:checked").val();
+  }
+
+  function recalculate(){
+
+    // label total
+    qty = parseInt($(".qty").val());
+    set_total(price * qty);
+    set_best_payment_price(best_payment_price * qty);
+    if(original_price > 0) set_original_price(original_price * qty);
+
+    // shipping
+    if(cep != ""){
+      calculate_shipping('#shipping-options',$('#product_type_id').val(),qty,$("#cart-cep").val(),function(){        
+        if(selected_shipping_option_price() != null){
+          calculate_payment("#total-calculator",$("#product_type_id").val(),qty,selected_shipping_option_price());
+        }
+      });
+    }
+  }
+
+  $(function(){
+    $(".qty").change(function(){  
+      recalculate();
+    });
+    recalculate();
+  });
+</script>
+<% end %>

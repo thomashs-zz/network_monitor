@@ -1,0 +1,16 @@
+<div class="wrap page--default">
+  <div class="sidebar">
+    <%= render partial: 'partials/categories' %>
+  </div>
+  <div class="content-side">
+    <% unless @products.empty? %>
+    <section class="products">
+      <p>Foram encontrados <strong><%= @products_count %> resultados</strong> para a categoria <strong><%= @current_category.name %></strong></p>
+      <%= render partial: 'partials/products', local_vars: { products: Product.all } %>
+      <%= paginate @products, theme: 'nutrisuporte' %>
+    </section>
+    <% else %>
+    <p><b>Nenhum produto foi encontrado.</b></p>
+    <% end %>
+  </div>
+</div>

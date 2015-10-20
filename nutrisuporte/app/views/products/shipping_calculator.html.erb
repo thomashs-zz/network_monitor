@@ -1,0 +1,9 @@
+<div class="radio-container radio-normal">
+<% @options.each_with_index do |option,i| %>
+<label class="as-block">
+	<input type="radio" name="shipping_option" onclick="javascript:calculate_payment('#total-calculator',<%= params[:product_type_id] %>,$('#product-detail-quant').val(),<%= option.price %>);save_shipping_option('<%= option.name %>');" value="<%= option.price %>" data-index="<%= option.name %>"<%= ' checked' if option.name.to_s == session["shipping_option"].to_s %>>
+  <span class="custom-radio"></span>
+  <span><%= option.name %> <% if option.days > 0 %>(até <%= pluralize(option.days,"dia útil","dias úteis") %>) <b><%= number_to_currency option.price %></b><% end %></span>
+</label>
+<% end %>
+</div>

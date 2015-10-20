@@ -1,0 +1,36 @@
+<section class="login--sign-up">
+
+<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+	<div>
+		<h2 class="main--title">Ainda não possuo cadastro</h2>
+  	<p>Para realizar compra você precisa possuir um cadastro no nosso site.</p>
+		<%= link_to "Quero me cadastrar", new_registration_path(resource_name), :class => "button orange bigger" %>  
+		<br/>
+	</div>
+<% end -%>
+
+<div id="devise-links">
+	<%- if controller_name != 'sessions' %>
+	  <%= link_to "Log in", new_session_path(resource_name) %><br />
+	<% end -%>
+
+	<%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+	  <%= link_to "Esqueceu sua senha?", new_password_path(resource_name) %><br />
+	<% end -%>
+
+	<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+	  <%= link_to "Não recebeu instruções de confirmação de cadastro?", new_confirmation_path(resource_name) %><br />
+	<% end -%>
+
+	<%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+	  <%= link_to "Não recebeu instruções de desbloqueio?", new_unlock_path(resource_name) %><br />
+	<% end -%>
+
+	<%- if devise_mapping.omniauthable? %>
+	  <%- resource_class.omniauth_providers.each do |provider| %>
+	    <%= link_to "Entre com #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider) %><br />
+	  <% end -%>
+	<% end -%>
+</div>
+
+</section>

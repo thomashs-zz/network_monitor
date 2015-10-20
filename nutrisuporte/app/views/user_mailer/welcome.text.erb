@@ -1,0 +1,42 @@
+Olá <%= @user.name %>,
+
+Seu cadastro na loja virtual Nutri Suporte foi realizado com sucesso.
+Segue abaixo as informações utilizadas:
+
+Dados Pessoais
+====================================================
+<%= @user.name %>
+<% if @user.user_type == 'fisica' %>
+CPF: <%= @user.cpf %>
+Sexo: <%= @user.the_gender %>
+<% else %>
+Razão Social: <%= @user.company_name %>
+CNPJ: <%= @user.cnpj %>
+<% end %>
+Data de nascimento: <%= I18n.l @user.birth_date %>
+
+Telefone: <%= @user.phone %> 
+Celular: <%= @user.mobile %>
+
+Endereço
+====================================================
+<% @user.user_addresses.each do |address| %>
+<%= address.name %>
+<%= address.address %> <%= address.number %>
+<%= address.complement if address.complement %>
+<%= address.neighbourhood %>
+<%= address.city %> <%= address.state %>
+
+<% end %>
+
+Dados de Login
+====================================================
+E-mail: <%= @user.email %>
+Senha: (sua senha de cadastro)
+
+Obs.: Caso este cadastro não tenha sido efetuado por você, pedimos que entre em contato conosco o mais breve possível pelo e-mail nutrisuporte@nutrisuporte.com.br.
+
+Atenciosamente,
+Nutri Suporte
+nutrisuporte@nutrisuporte.com.br
+http://www.nutrisuporte.com.br

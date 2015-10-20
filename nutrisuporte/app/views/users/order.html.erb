@@ -1,0 +1,97 @@
+<% content_for :header do %>
+<%= stylesheet_link_tag "lightbox" %>
+<% end %>
+<div class="page--orders">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Meus Pedidos: Detalhes do pedido nº <%= @order.the_id %></h1>
+    </div>
+  </div>
+
+  <section class="wrap-content page--default">
+    <div class="responsive-table">
+    <table class="table--default">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="cart--product-info-th"><span>Produto</span></th>
+          <th><span>Quantidade</span></th>
+          <th><span>Sabor</span></th>
+          <th><span>Preço do produto</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @order.order_items.each do |item| %>
+        <tr class="cart--product-item">
+          <td class="cart--product-image">
+            <a href="<%= item.product.image.url(:medium) %>" data-lightbox="image-<%= item.product.id %>" data-title="<%= item.product.name %><% if item.product.subtitle.present? %> (<%= item.product.subtitle %>)<% end %>">
+              <%= image_tag(item.product.image.url(:thumb),alt: item.product.name, width: 80) %>
+            </a>
+          </td>
+          <td class="cart--product-info">
+            <h2 class="product-item--title"><%= item.product.name %><% if item.product.subtitle.present? %> (<%= item.product.subtitle %>)<% end %></h2>
+            <p><b>Categoria:</b> <%= item.product.product_category.name %> <br>
+            <b>Fabricante:</b> <%= item.product.brand.name %></p>
+          </td>
+          <td><%= item.qty.to_s.rjust(2,"0") %></td>
+          <td><%= item.product_type %></td>
+          <td><%= number_to_currency(item.price) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+    
+    <div class="order-info">
+      <div class="iinfo">
+        <p><b>Forma de pagamento</b></p>
+        <%= Order.payment_methods.invert[@order.payment_method] %>
+        <% if @order.total_discount %>
+        &nbsp;(<%= number_to_currency(@order.total_discount) %> de desconto)
+        <% end %>
+        <% if @order.payments %><%= @order.payments %>x<% end %>
+        <% if @order.credit_card_interest %>
+        &nbsp;(<%= number_to_currency(@order.credit_card_interest) %> cobrados de juros)
+        <% end %>
+      </div>
+      <div class="iinfo">
+        <p><b>Forma de Entrega</b></p>
+        <%= @order.delivery_method %>
+      </div>
+      <% if @order.delivery_method != 'Retirar na Loja' %>
+      <% if @order.delivery_days %>
+      <div class="iinfo">
+        <p><b>Prazo de Entrega</b></p>
+        <%= pluralize @order.delivery_days, "dia útil", "dias úteis" %>
+      </div>
+      <% end %>
+      <div class="iinfo">
+        <p><b>Endereço de Entrega</b></p>
+        <%= @order.delivery_address %> <%= @order.delivery_complement %><br/>
+        CEP <%= @order.delivery_cep %> Bairro <%= @order.delivery_neighbourhood %><br/>
+        <%= @order.delivery_city %> - <%= @order.delivery_state %>
+      </div>
+      <% end %>
+    </div>
+
+    <div class="product-cart--cep">
+      <table class="table--default table--cart-cep">
+        <tr>
+          <% total_shipping_split = @order.total_shipping.to_s.split('.') %>
+          <td colspan="4" class="final-values shipping text-right">Frete: <small>R$ </small><span class="price"><%= total_shipping_split[0] %><small>,<%= total_shipping_split[1].ljust(2,'0') %></small></span></td>
+        </tr>
+        <tr>
+          <td colspan="4" class="final-values total text-right">
+            <% total_split = @order.the_total.to_s.split('.') %>
+            Total: <small>R$ </small><span class="price"><%= total_split[0] %><small>,<%= total_split[1].to_s.ljust(2,'0') %></small></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+</div>
+
+<% content_for :js do %>
+<%= javascript_include_tag "lightbox.min" %>
+<% end %>

@@ -1,0 +1,38 @@
+<div class="page--contact">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Contato</h1>
+    </div>
+  </div>
+
+  <section class="wrap-content">
+    <p class="contact-text">Entre em contato conosco preenchendo o formulário abaixo.</p>
+
+    <%= form_tag contact_path, :class => "form-contact login--form" do |f| %>
+      <% if @contact_form.errors.any? %>
+      <div id="alert">
+        <ul>
+          <% @contact_form.errors.full_messages.each do |err| %>
+          <li><%= err %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+      <%= text_field_tag :name, @contact_form.name, :class => "full", :required => true, placeholder: "Seu nome" %>
+      <%= email_field_tag :email, @contact_form.email, :class => "full", :required => true, placeholder: "Email" %>
+      <%= text_field_tag :phone, @contact_form.phone, :class => "full", :required => true, placeholder: "Telefone" %>
+      <%= text_area_tag :message, @contact_form.message, :class => "full", :required => true, placeholder: "Mensagem" %>
+      <%= submit_tag "Enviar", :class => "button pull-right" %>
+    <% end %>
+
+    <div class="gmap">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3454.8804407510047!2d-51.18203734921266!3d-30.011589222902483!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951979d8ee95d475%3A0x57e914bbc41e3a57!2sR.+Am%C3%A9rico+Vesp%C3%BAcio%2C+1231+-+Higien%C3%B3polis%2C+Porto+Alegre+-+RS%2C+90550-031!5e0!3m2!1sen!2sbr!4v1416527638359"  class="contact-map"></iframe>
+      <p class="contact-address">
+        <%= NutrisuporteSetting.address %><br>
+        <%= mail_to NutrisuporteSetting.email %><br/>
+        <%= NutrisuporteSetting.open_time %><br/>
+      </p>
+    </div>
+    
+  </section>
+</div>

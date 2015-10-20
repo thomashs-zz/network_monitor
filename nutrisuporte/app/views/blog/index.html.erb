@@ -1,0 +1,19 @@
+<div class="page--blog">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Blog</h1>
+    </div>
+  </div>
+  <section class="wrap page--blog">
+    <% @blog_items.each do |item| %>
+    <article class="blog--post blog--post-summary">
+      <%= image_tag item.image.url(:thumb), :class => "blog--img-post" %>
+      <h2 class="blog--title-post"><%= link_to item.title, blog_show_path(item.url) %></h2>
+      <p class="blog--post-date">Publicado dia <time datetime="<%= item.created_at %>"><%= I18n.l item.created_at %></time></p>
+      <%= item.content[0..500].html_safe %>
+      <%= link_to "Veja mais", blog_show_path(item.url), :class => "blog--post-read" %>
+    </article>
+    <% end %>
+    <%= paginate @blog_items, theme: 'nutrisuporte' %>
+  </section>
+</div>

@@ -1,0 +1,19 @@
+<div class="page--blog">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Blog</h1>
+    </div>
+  </div>
+  <section class="wrap page--blog">
+    <article class="blog--post blog--post-complete">
+      <%= image_tag @blog_item.image.url("thumb"), :class => "blog--img-post" %>
+      <h2 class="blog--title-post"><%= link_to @blog_item.title, blog_show_path(@blog_item.url) %></h2>
+      <p class="blog--post-date">Publicado dia <time datetime="<%= @blog_item.created_at %>"><%= I18n.l @blog_item.created_at %></time></p>
+      <p>
+        <div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
+      </p>
+      <%= @blog_item.content.html_safe %>
+    </article>
+    <%= link_to "Voltar", blog_path, :class => "highlight" %>
+  </section>
+</div>

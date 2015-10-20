@@ -1,0 +1,13 @@
+<div class="sidebar--content responsive-menu">
+	<% @categories.each do |product_category| %>
+  <nav class="sidebar-nav--category">
+    <h3 class="nav-category--title"><%= product_category.name %> <span class="icon-chevron-up"></span></h3>
+    <ul>
+    	<% product_category.product_categories.each do |child| %>
+      <% subtitle = child.subtitle.present? ? " <small>(#{child.subtitle})</small>" : "" %>
+      <li><%= link_to "#{child.name}#{subtitle}".html_safe, product_category_nested_path(product_category.url,child.url) %></li>
+      <% end %>
+    </ul>
+  </nav>
+  <% end %>
+</div>

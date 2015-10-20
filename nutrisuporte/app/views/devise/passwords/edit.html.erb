@@ -1,0 +1,21 @@
+<div class="page--sign-up">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Esqueceu sua senha?</h1>
+    </div>
+  </div>
+  <section class="wrap">
+    <section class="login--form">
+      <p>Para recuperar sua senha, digite seu e-mail:</p>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, :class => "login" }) do |f| %>
+        <%= devise_error_messages! %>
+        <%= f.hidden_field :reset_password_token %>
+        <%= f.email_field :email, autofocus: true, :placeholder => "e-mail", :class => "full" %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "off", :placeholder => "senha", :class => "full" %>
+        <%= f.password_field :password_confirmation, autocomplete: "off", :placeholder => "senha", :class => "full" %>    
+        <%= f.submit "Enviar instruções", :class => "button pull-right" %>
+      <% end %>
+    </section>
+    <%= render "devise/shared/links" %>
+  </section>
+</div>

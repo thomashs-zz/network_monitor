@@ -1,0 +1,14 @@
+<div class="modal fade modal--default" id="confirmation-bill-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm ">
+    <div class="modal-content">
+      <div class="modal-body">
+        <span class="payment-method--icon icon-barcode"></span>
+        <h3 class="top-title">Seu pedido foi realizado com <span class="highlight">sucesso</span>!</h3>
+        <a href="#" target="_blank" class="button orange bigger boleto-url">Gerar Boleto</a>
+        <div class="modal-button-wrapper">
+          <%= link_to "Acompanhar meus pedidos", user_orders_path, :class => "button" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

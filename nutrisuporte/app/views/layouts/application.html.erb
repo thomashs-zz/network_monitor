@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+	  <title>Nutrisuporte</title>
+	  <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <%= stylesheet_link_tag "responsive" %>
+	  <%= stylesheet_link_tag "application" %>
+	  <%= csrf_meta_tags %>
+	  <%= yield :header %>
+	</head>
+	<body>
+
+	<header class="header">
+
+	  <div class="wrap">
+
+	  	<nav id="mobile-and-table-nav">
+	  		<%= link_to user_account_path do %><%= image_tag 'icon-user.png' %><% end %>
+	  		<%= link_to contact_path do %><%= image_tag 'icon-contact.png' %><% end %>
+	  		<%= link_to cart_path do %><%= image_tag 'icon-cart.png' %><% end %>
+	  	</nav>
+
+	    <nav class="nav-top">
+	    	<%= link_to "Home", root_path, :class => "nav-top--item active", :title => "Ir para a página inicial" %>
+	      <%= link_to "Quem Somos", about_path, :class => "nav-top--item", :title => "Conheça a Nutrisuporte" %>
+	      <%= link_to "Blog", blog_path, :class => "nav-top--item", :title => "Veja as novidades da Nutrisuporte" %>
+	      <%= link_to "Contato", contact_path, :class => "nav-top--item", :title => "Entre em contato conosco" %>
+	    </nav>
+
+	    <nav class="nav-user">
+	      <% if user_signed_in?  %>
+	      <!-- Se o usuário estiver logado -->
+	      <p class="user--welcome-msg">
+	        Olá, <%= current_user.name %>
+	      </p>
+	      <ul>
+	      	<li><%= link_to "Carrinho (#{@cart_size})", cart_path, :class => "nav-user--item highlight" %></li>
+	        <li><%= link_to "Meu cadastro", user_account_path, :class => "nav-user--item highlight", :title => "Acessar meu cadastro" %></li>
+	        <li><%= link_to "Meus pedidos", user_orders_path, :class => "nav-user--item highlight", :title => "Acessar meus pedidos" %></li>
+	        <li><%= link_to "Sair", destroy_user_session_path, :method => :delete, :class => "nav-user--item", :title => "Sair do Nutrisuporte" %></li>
+	      </ul>
+	      <% else %>
+	      <!-- Se o usuário não estiver logado -->
+	      <ul>
+	      	<li><%= link_to "Carrinho (#{@cart_size})", cart_path, :class => "nav-user--item highlight" %></li>
+	        <li><%= link_to "Cadastre-se", new_user_registration_path, :class => "nav-user--item highlight", :title => "Faça um cadastro" %></li>
+	        <li><%= link_to "Fazer login", new_user_session_path, :class => "nav-user--item highlight link--login", :title => "Entre na sua conta" %></li>
+	      </ul>
+	      <!-- Modal para entrar na conta -->
+	      <div class="box-balloon" id="modal--login">
+	      	<%= form_tag user_session_path do %>
+	        <input type="email" placeholder="Seu e-mail" name="user[email]">
+	        <input type="password" placeholder="Senha" name="user[password]">
+	        <%= link_to "Esqueci minha senha", new_user_password_path, :class => "link--recover-passord" %>
+	        <input type="submit" value="Entrar" />
+	        <% end %>
+	      </div>
+	      <% end %>
+	    </nav>
+
+	    <div class="logo-section">
+	      <div class="header--logo">
+	      	<%= link_to root_path do %>
+	      		<%= image_tag("logo.png", :class => "logo", alt: "Nutrisuporte - Assistência Nutricional") %>
+	        <% end %>
+	      </div>
+	      <div class="responsive-menu-button">
+	      	<a href="javascript:$('.responsive-menu').toggle('slide');">☰</a>
+	      </div>
+	      <div class="form-search">
+	      	<%= form_tag search_path, :method => "get" do %>
+	        <input id="ac-top" type="search" class="input--search" name="busca" placeholder="Pesquise seu produto aqui" value="<%= params[:busca] %>">
+	        <%= submit_tag "Pesquisar", :class => "button" %>
+	        <% end %>
+	      </div>
+	      <section class="know-more">
+	        <span class="phone"><span class="icon-phone as-circle"></span> <%= NutrisuporteSetting.main_phone %></span>
+	        <%= link_to about_path, :class => "our-store" do %>
+	        	<span class="icon-home as-circle"></span> Conheça a nossa loja
+	        <% end %>
+	      </section>
+	    </div>
+
+	  </div>
+
+	  <div class="responsive-line"></div>
+
+	  <nav class="nav-main">
+	    <div class="wrap-content">
+	      <ul class="nav-main--categories">
+	      	<% @categories.each do |category| %>
+	      	<li><%= link_to category.name, product_category_path(category.url), :class => "nav-main--item" %></li>
+	      	<% end %>
+	      </ul>
+	      <a href="javascript:$('#lhc_status_container a').click();" class="nav-main--item online-chat active" title="Atendimento online">
+	      	<span class="icon-bubbles"></span> <span class="text">chat Online</span>
+	      </a>
+	    </div>
+	  </nav>
+
+	</header>
+
+	<% if notice %>
+	<div id="notice">
+		<div class="wrap-content">
+			<%= notice %>
+		</div>
+	</div>
+	<% end %>
+
+	<% if alert %>
+	<div id="alert">
+		<div class="wrap-content">
+			<%= alert %>
+		</div>
+	</div>
+	<% end %>
+
+	<%= yield %>
+
+	<footer class="footer">
+
+		  <section class="footer--search">
+		    <div class="wrap-content">
+		    	<%= form_tag search_path, :method => "get" do %>
+	        <input type="search" class="input--search" name="busca" placeholder="Pesquise seu produto aqui" value="<%= params[:busca] %>">
+	        <%= submit_tag "Pesquisar", :class => "button white" %>
+	        <% end %>
+		    </div>
+		  </section>
+
+		  <section class="footer--navigation">
+		    <div class="wrap">
+
+		      <section class="footer--sitemap">
+		        <h4>Mapa do site</h4>
+		        <ul class="list--sitemap">
+		          <li><%= link_to "Quem Somos", about_path %></li>
+		          <li><%= link_to "Blog", blog_path %></li>
+		          <li><%= link_to "Contato", contact_path %></li>
+		        </ul>
+		      </section>
+
+		      <section class="footer--my-account">
+		        <h4>Minha conta</h4>
+		        <ul class="list--my-account">
+		        	<% if user_signed_in? %>
+		          <li><%= link_to "Minha Conta", user_account_path %></li>
+		          <% else %>
+		          <li><%= link_to "Login", new_user_session_path %></li>
+		          <% end %>
+		          <li><%= link_to "Meus pedidos", user_orders_path %></li>
+		        </ul>
+		      </section>
+
+		      <section class="footer--contact-info">
+		        <ul class="list--contact-info">
+		          <li class="adjust-margin">
+		            <div class="icon-phone as-circle"></div> 
+		            <span><%= NutrisuporteSetting.main_phone %></span>
+		            <div class="clear"></div>
+		          </li>
+		          <li class="adjust-margin">
+		            <div class="icon-envelope as-circle"></div>
+		            <span><%= mail_to NutrisuporteSetting.email %></span>
+		            <div class="clear"></div>
+		          </li>
+		          <li class="small">
+		            <div class="icon-home as-circle"></div> 
+		            <span><%= NutrisuporteSetting.address %></span>
+		            <div class="clear"></div>
+		          </li>
+		          <li>
+		            <div class="icon-clock as-circle"></div> 
+		            <span>
+		            	Horário de Atendimento:<br/>
+		            	<span class="contact-info--time"><%= NutrisuporteSetting.open_time %></span>
+		            </span>
+		            <div class="clear"></div>
+		          </li>
+		        </ul>
+		      </section>
+
+		      <section class="footer--fast-links">
+		        <ul class="list--fast-links">
+		        	<li><%= link_to "Entrega e frete", terms_of_use_path, title: "Entrega e Frete" %></li>
+		        	<li><%= link_to "Forma de pagamento", terms_of_use_path, title: "Forma de pagamento" %></li>
+		        	<li><%= link_to "Política de Troca", terms_of_use_path, title: "Política de Troca" %></li>
+		        	<li><%= link_to "Perguntas Frequentes", terms_of_use_path, title: "Perguntas Frequentes" %></li>
+		        </ul>
+		      </section>
+
+		      <section class="footer--social-and-pay">
+		        <a target="_blank" href="https://www.facebook.com/NutriSuporte?ref=hl" class="icon-facebook3"></a>
+		        <a target="_blank" href="http://twitter.com/NutriSuporte" class="icon-twitter3"></a>
+		        <hr>
+		        <h5>Forma de pagamento</h5>
+		        <%= image_tag("payment-methods.png",alt: "Meios de pagamento") %>
+		      </section>
+
+		    </div>
+		  </section>
+
+		  <section class="footer--bottom">
+		    <div class="wrap-content">
+		    	<%= image_tag("nutrisuporte-symbol.png",alt: "Nutrisuporte logo")  %>
+		      <span>© Copyright 2014 Nutri Suporte Ltda. Todos os direitos reservados.</span>
+		      <a href="http://intodigital.com.br" class="into" title="Desenvolvido por Into Digital Intelligence">Desenvolvido por Into Digital Intelligence</a>
+		    </div>
+		  </section>
+
+	</footer>
+
+	<%= javascript_include_tag "application" %>
+  <%= content_for :js %>
+  <% #= javascript_include_tag "jquery-ui.min" %>
+  <script type="text/javascript">
+  	var temp_url = "<%= product_path('x') %>";
+  	$(function(){
+  		$("#ac-top").autocomplete({
+  			source : "<%= auto_complete_search_path %>",
+  			minLength : 3,
+  			select : function(event,ui){
+  				window.location = temp_url.replace("x",ui.item.url);
+  			}
+  		}).autocomplete("instance")._renderItem = function(ul,item){
+  			return $("<li>")
+  				.append("<div class='img'><img src='"+item.image["thumb"]["url"]+"' /></div>"+
+  					"<div class='text'>" +
+  					"<a>"+item.name +( item.subtitle ? "(" + item.subtitle + ")" : "") + "</a><br/>" +
+  					"Fabricante: " + item.brand_name + "<br/>" +
+  					"Categoria: " + item.product_category_name + "<br/>" + 
+  					"<span class='price'>" + item.price_str + "</span>" +
+  					"</div>" +
+  					"<div class='clear'></div>")
+  				.appendTo(ul);
+  		};
+  	});
+  </script>
+
+  <script type="text/javascript">
+		var LHCChatOptions = {};
+		LHCChatOptions.opt = {widget_height:340,widget_width:300,popup_height:520,popup_width:500};
+		(function() {
+		var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+		var refferer = (document.referrer) ? encodeURIComponent(document.referrer.substr(document.referrer.indexOf('://')+1)) : '';
+		var location  = (document.location) ? encodeURIComponent(window.location.href.substring(window.location.protocol.length)) : '';
+		po.src = '//104.131.196.98:8282/index.php/por/chat/getstatus/(click)/internal/(position)/bottom_right/(ma)/br/(top)/350/(units)/pixels/(leaveamessage)/true/(department)/1?r='+refferer+'&l='+location;
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+
+	<script>
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '1409992325977444',
+	      xfbml      : true,
+	      version    : 'v2.2'
+	    });
+	  };
+	  (function(d, s, id){
+	     var js, fjs = d.getElementsByTagName(s)[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement(s); js.id = id;
+	     js.src = "//connect.facebook.net/pt_BR/sdk.js";
+	     fjs.parentNode.insertBefore(js, fjs);
+	   }(document, 'script', 'facebook-jssdk'));
+	</script>
+  
+  <script type="text/javascript">
+		$(window).load(function(){
+			observe_height(".products-list--item");
+			make_heights_ok();
+		});
+  </script>
+
+  </body>
+</html>

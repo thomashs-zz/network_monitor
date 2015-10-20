@@ -1,0 +1,14 @@
+<div class="card-method--ways">
+  <strong>Em até <%= @max_payments %>x de <%= number_to_currency(@product.payment_price(@max_payments,@shipping_total,@qty)) %> no cartão</strong>
+  <table class="parcelamento">
+    <tr>
+    <% @max_payments.times do |i| %>
+    <% i += 1 %>
+      <td><%= i %>x de <%= number_to_currency(@product.payment_price(i,@shipping_total,@qty)) %></td>
+    <% if i % 3 == 0 %></tr><% end %>
+    <% if i % 3 == 0 and i < @max_payments %><tr><% end %>
+    <% end %>
+    </tr>
+  </table>
+  <span class="method-info">* juros de <%= NutrisuporteSetting.credit_card_interest.to_s.gsub(".",",") %> ao mês</span>
+</div>

@@ -1,0 +1,27 @@
+<table class="table--default table--cart-cep">
+  <% @options.each do |option| %>
+  <tr <%= "class=shipping-selector-message-selector" if option.message.present? %>>
+    <td class="shipping-type"><%= option.name %></td>
+    <td><% if option.days > 0 %>até <%= pluralize(option.days,"dia útil","dias úteis") %><% end %></td>
+    <td><% if option.price > 0 %><b><%= number_to_currency(option.price.round(2)) %></b><% end %></td>
+    <td>
+      <div class="radio-container in-fieldset">
+        <label>
+          <input type="radio" name="shipping_option" onclick="javascript:select_shipping_option(this);" <%= "checked" if session["shipping_option"] == option.name %> value="<%= option.name %>" price="<%= option.price.round(2) %>">
+          <span class="custom-radio"></span>
+        </label>
+      </div>
+    </td>
+  </tr>
+  <% if option.message.present? %>
+  <tr class="shipping-selector-message">
+    <td colspan="4"><%= option.message %></td>
+  </tr>
+  <% end %>
+  <% end %>
+  <tr>
+    <td colspan="4" class="final-values shipping text-right">
+      Frete: <small>R$ </small><span id="shipping-price">-</span>
+    </td>
+  </tr>
+</table>

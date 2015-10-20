@@ -1,0 +1,26 @@
+source 'https://rubygems.org'
+gem 'rails', '3.2.13'
+gem 'pg'
+gem 'pg_search'
+gem 'activeadmin'
+gem 'carrierwave'
+gem 'mini_magick'
+gem 'stringex'
+gem 'brcpfcnpj'
+gem 'kaminari'
+gem 'nested_form'
+gem 'textacular'
+gem 'correios-frete'
+gem 'activeadmin-dragonfly', github: 'stefanoverna/activeadmin-dragonfly'
+gem 'activeadmin-wysihtml5', github: 'stefanoverna/activeadmin-wysihtml5'
+gem 'moip-transparente' #, :path => '/Users/thomassieczkowski/Documents/Desenvolvimento/ruby/moip-transparente'
+group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+	gem 'uglifier', '>= 1.0.3'
+end
+gem 'jquery-rails', '~> 2.3.0'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0'
+end

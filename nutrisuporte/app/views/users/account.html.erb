@@ -1,0 +1,44 @@
+<div class="page--user-info">
+  <div class="current-page--bar">
+    <div class="wrap-content">
+      <h1>Meu cadastro</h1>
+    </div>
+  </div>
+
+  <section class="wrap">
+
+    <section class="login--acc-data">
+      <h3 class="section--title">Dados de Login</h3>
+      <p><b>e-mail:</b><br><%= current_user.email %></p>
+      <p><b>Senha:</b><br>******</p>
+    </section>
+
+    <section class="login--personal-data">
+      <h3 class="section--title">Dados Pessoais</h3>
+      <p><b>Nome:</b><br><%= current_user.name %></p>
+      <p><b>CPF:</b><br><%= current_user.cpf %></p>
+      <p><b>Data de nascimento:</b><br><%= I18n.l current_user.birth_date if current_user.birth_date %></p>
+      <p><b>Sexo:</b><br><%= current_user.the_gender %></p>
+      <p><b>Telefone:</b><br><%= current_user.phone %></p>
+      <p><b>Telefone celular:</b><br><%= current_user.mobile %></p>
+    </section>
+
+    <section class="login--address">
+      <h3 class="section--title">Endereços</h3>
+     <% current_user.user_addresses.each do |a| %>
+      <div>
+        <p><b>Endereço padrão:</b><br><%= a.is_default ? "Sim" : "Não" %></p>
+        <p><b>Nome:</b><br><%= a.name %></p>
+        <p><b>Endereço:</b><br><%= a.address %>, <%= a.number %> <%= a.complement %></p>
+        <p><b>Bairro:</b><br><%= a.neighbourhood %></p>
+        <p><b>CEP:</b><br><%= a.cep %></p>
+        <p><b>Cidade:</b><br><%= a.city %></p>
+        <p><b>UF:</b><br><%= a.state %></p>
+      </div>
+      <hr/>
+      <% end %>
+      <%= link_to "Alterar Dados", edit_user_account_path, :class => "button big pull-right" %>
+    </section>
+    
+  </section>
+</div>

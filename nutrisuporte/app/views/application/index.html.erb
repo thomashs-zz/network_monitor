@@ -1,0 +1,69 @@
+<div class="sliders">
+  <div class="wrap-content">
+
+    <% if @slider_items.any? %>
+    <section class="main-slider">
+      <% if Product.is_there_any_deals %>
+      <%= link_to deals_path do %>
+        <%= image_tag("main-slider_ribbon.png",:class => "main-slider--ribbon", :alt => "Veja todas as promoções") %>
+      <% end %>
+      <% end %>
+      <div class="slider owl-carousel owl-theme" id="main-slider">
+        <% @slider_items.each do |item| %>
+        <article class="item" style="background: url(<%= item.background_image.url %>)">
+          <% unless item.display_picture_only %>
+          <%= image_tag(item.image.url,:class => "pull-left") %>
+          <div class="slide--info">
+            <h1><%= item.title %></h1>
+            <small>(<%= item.subtitle %>)</small>
+            <p><%= item.description %></p>
+            <span class="price"><sup>R$</sup> <%= number_to_currency(item.price,unit: "") %> <small><%= item.price_subtitle %></small></span>
+            <a href="<%= item.url %>" class="button orange bigger">comprar</a>
+          </div>
+          <% end %>
+        </article>
+        <% end %>
+      </div>
+    </section>
+    <% end %>
+
+    <% if @slider_brands.any? %>
+    <section class="brands-slider">
+      <nav class="brand-pagination">
+        <a class="brand-prev">‹</a>
+        <a class="brand-next">›</a>
+      </nav>
+      <div class="slider-brands owl-carousel owl-theme" id="brand-slider">
+        
+        <% @slider_brands.each do |brand| %> 
+        <div class="item">
+          <%= link_to product_brand_path(brand.url) do %>
+            <%= image_tag(brand.image.url(:thumb),alt: brand.name) %>
+          <% end %>
+        </div>
+        <% end %>
+
+      </div>
+    </section>
+    <% end %>
+
+  </div>
+</div>
+
+<div class="wrap page--homepage">
+  <div class="sidebar">
+
+    <% if NutrisuporteSetting.first.show_banner_home %>
+    <%= image_tag(NutrisuporteSetting.first.banner_home_image.url(:thumb), :class => "responsive-hide2") %>
+    <% end %>
+    
+    <%= render partial: 'partials/categories' %>
+
+  </div>
+
+  <div class="content-side">
+    <section class="products">
+      <%= render partial: 'partials/products', locals: { products: @products } %>
+    </section>
+  </div>
+</div>
