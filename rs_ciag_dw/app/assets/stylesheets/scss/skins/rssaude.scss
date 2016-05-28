@@ -1,0 +1,301 @@
+/*
+ * Tema RS Saude
+ * p/ Detail Admin
+*/
+.nested-form{
+	border-left:solid 3px #EAEAEA;
+	padding-left:20px;
+	margin-bottom:20px;
+	padding-bottom:20px;
+	border-bottom:solid 1px #EAEAEA;
+}
+
+.created_and_updated_by{
+	border-top:1px solid #edeff1;
+	margin-top:40px;
+	padding-top:20px;
+	color:#999;
+}
+
+.ui-select-header{
+	margin-top:10px !important;
+	margin-left:10px !important;
+}
+
+.border-left{
+	border-left:solid 1px #EAEAEA;
+	padding-left:20px;
+}
+
+.custom-radio-inline{
+	cursor:pointer;
+	padding-bottom:10px;
+}
+
+table.visiotest-matrix{
+	background-color:white;
+	tr{
+		th{
+			border-top:none;
+			padding:10px;
+		}
+		td,th{
+			text-align:center;
+		}
+		td{
+			padding:0px;
+			label{ 
+				padding:10px 10px;
+				width:100%;
+				margin-bottom:0px;
+				cursor:pointer;
+			}
+			label.left{
+				text-align:left;
+			}
+		}	
+	}
+}
+
+.dl-horizontal{
+	dd,dt{ margin-bottom:3px; }
+	dt{ text-align:left; }
+}
+
+.super-title{
+	background-color:#f9f9f9;
+	padding:30px 50px;
+	padding-bottom:20px;
+	border-bottom:solid 1px #CCC;
+}
+.super-title-jumbo{
+	padding:50px;
+}
+
+.rs-signature{
+	margin:10px 177px;
+	text-align:center;
+	margin-bottom:40px;
+	color:#CCCCCC;
+}
+
+.content-external{
+	margin-right:177px;
+	border-right: 1px solid #dae3e9;
+	border-radius: 0px 0px 5px 5px;
+	margin-bottom:40px;
+	width:90%;
+	margin-left:0px;
+	margin:auto;
+}
+.navbar-inverse{
+	.logo-external{
+		display:block;
+		padding-top:10px;
+	}
+}
+
+.alert{
+	.alert-inner{
+		padding-left:50px;
+	}
+}
+
+.rs-header{
+	margin-bottom:40px;
+}
+
+
+.rs-dl{
+	border:solid 1px #CCCCCC;
+	border-radius: 6px;
+	padding-bottom:10px;
+	background-color:#FFFFFF;
+	dt,dd{
+		margin-bottom:0px;
+		margin-top:0px;
+		padding:10px;
+	}
+	dt{
+		border-bottom:solid 1px #EAEAEA;
+	}
+	dd{
+		padding-bottom:0px;
+	}
+	dt:last-child{
+		border-bottom:none;
+	}
+}
+
+table tr td .rs-dl{
+	margin:10px;
+}
+
+tr.tr-details, tr.tr-details:hover{
+	background-color:#EEEEEE !important;
+}
+
+@media (min-width: 768px) {
+	.rs-dl{
+		padding-bottom:0px;
+	}
+}
+
+.table-rounded{
+	border:solid 1px #CCCCCC;
+	border-radius:6px;
+	border-collapse:separate;
+	width:100%;
+	margin-top:10px;
+	tr{
+		td{
+			padding:10px !important;
+		}
+		td.left{
+			text-align:left;
+		}
+	}
+}
+
+.rs-title{
+	margin-top:40px;
+}
+
+.ui-autocomplete { 
+	z-index:9999 !important;
+}
+
+.navbar-inverse {
+	input.search{
+		z-index:10000;
+	}
+}
+
+.label-orange{
+	background-color:darkorange;
+}
+
+.label-purple{
+	background-color:#A64DFF;
+}
+
+.field_with_errors label{
+	color:red;
+}
+
+form{
+	span.tip{
+		display:block;
+		margin-top:5px;
+	}
+}
+
+.margin-left{
+	margin-left:10px;
+}
+
+input.small-quantity{
+	width:60px;
+}
+
+.autocomplete-inner{
+	margin: 10px;
+	clear:both;
+	input{
+		width:70%;
+	}
+}
+
+#date-range-row{
+	display:block;
+	border-bottom:solid 1px #CCCCCC;
+	clear:both;
+	.col-md-4{
+		padding:28px;
+	}
+	.left{ padding-left:45px; }
+	.center{ text-align:center; 
+		.white{
+			padding:6px;
+		}
+	}
+	.right{ padding-right:45px; text-align:right; }
+}
+
+.text-blue{
+	color: #32a0ee;
+}
+
+.radio-sub-option{
+	margin:10px 0px 10px 20px;
+}
+
+.normal-title{
+	margin:10px 0px;
+}
+
+td.table-separator{
+	background-color:#eaeaea;
+	border-bottom:solid 1px #CCCCCC;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+
+div.inner-options-appointments{
+	margin-left:10px;
+	.col-md-3{
+		padding-right:10px;
+	}
+}
+
+.filter-box{
+	border:solid 1px #cccccc;
+	border-radius:5px;
+	overflow:scroll;
+	height:200px;
+	margin:10px 0px;
+	padding:20px;
+}
+
+.full-width{
+	display:block;
+	margin-left:10px;
+}
+
+.appointment-credits-calculate-form{
+	display:block;
+	height:70px;
+	margin-bottom:10px;
+}
+
+.cursor-pointer{
+	cursor:pointer;
+}
+
+.bigger-font{
+	font-size:16px;
+}
+
+.external-navbar{
+	width:90%;
+	margin:auto;
+}
+
+select.giant-select{
+	display:block;
+	width:100%;
+	padding:20px;
+	height:60px;
+	background: white;
+	border:solid 1px #CCC;
+	border-bottom:solid 1px #666;
+	border-radius:5px;
+	font-size:18px;
+	margin-bottom:20px;
+	cursor:pointer;
+}
+
+select.giant-select:hover{
+	background-color:#EEE;
+}
+

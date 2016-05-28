@@ -22,5 +22,37 @@ module Triptri
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # DEVISE
+    config.to_prepare do
+      Devise::SessionsController.layout "application"
+      # Devise::RegistrationsController.layout ""
+      Devise::ConfirmationsController.layout "application"
+      Devise::UnlocksController.layout "application"
+      Devise::PasswordsController.layout "application"
+      Devise::Mailer.layout 'mailer'
+    end
+    
+    # SMTP
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      :address              => 'smtp.gmail.com',
+      :port                 => 587,
+      :domain               => 'gmail.com',
+      :user_name            => 'naorespondatriptri@gmail.com',
+      :password             => "Santiago2015!",
+      :authentication       => 'plain',
+      :enable_starttls_auto => true
+    }
+
+    # I18N
+    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+    config.i18n.default_locale = 'pt-BR'
+    config.time_zone = 'Brasilia'
+
+    require 'the_id'
+
+    #config.register_javascript 'autocomplete-rails.js'
+    
   end
 end

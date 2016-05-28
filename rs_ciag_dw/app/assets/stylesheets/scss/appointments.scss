@@ -1,0 +1,253 @@
+#appointments-page{
+	.menu{
+		width:100%;
+		display:block;
+		overflow: auto;
+		a.tab{
+			font-size:18px;
+			text-align:center;
+			width:33.33333%;
+			float:left;
+			display:block;
+			padding:30px 10px;
+			background-color:#2c3742;
+			color:white;
+			text-decoration:none;
+			box-sizing:border-box;
+  		-moz-box-sizing:border-box;
+  		-webkit-box-sizing:border-box;
+  		border-left:dotted 1px #CCCCCC;
+  		border-bottom:solid 1px #CCCCCC;
+		}
+		a.tab:first-child{ border-left:none; }
+		a.tab.active{ background-color:white; color:#2c3742; }
+		a.tab.active:hover{ background-color:white; }
+		a.tab:hover{ background-color:#0f1217; }
+		a.tab.active{ border-bottom:solid 1px white; }
+		a.tab i{
+			margin-right:10px;
+		}
+	}
+	.menu:after{
+		clear:both;
+	}
+	.wrapper{
+		padding:60px;
+	}
+}
+
+.appointment-availability-calendar{
+	border:solid 1px #EAEAEA;
+	display:block;
+	width:100%;
+	overflow:auto;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	border-radius:5px;
+	.item{
+		div.number{
+			text-align:left;
+			color:#666;
+			padding:10px;
+		}
+		a{
+			display:block;
+			text-align:center;
+			padding:30px;
+			background-color:#d9edf7;
+		}
+		a .big{
+			font-size:20px;
+		}
+		a:hover{
+			text-decoration:none;
+			background-color:#B6E5FC;
+		}
+	}
+	.skip{
+		background-color:#EAEAEA;
+	}
+	.calendar-item{
+		border-right:solid 1px #ccc;
+		border-bottom:solid 1px #ccc;
+		width:14.285714286%;
+		float:left;
+	}
+	.calendar-header{
+		.calendar-item{
+			padding:10px;
+		}
+		text-align:center;
+		text-transform:uppercase;
+		color:#666;
+		border-bottom:solid 1px #EAEAEA;
+		overflow:auto;
+	}
+}
+
+@media screen and (max-width: 600px){
+	.calendar-item{
+		width:100% !important;
+	}
+	.calendar-header, .skip, .calendar-empty{ display:none; }
+}
+
+.appointments-date-box{
+	border-radius:5px;
+	margin:20px 0px;
+	border:solid 1px #EAEAEA;
+	padding:20px;
+	h6{ 
+		text-decoration:none; 
+		font-size:20px;
+		margin:0px;
+		.gray{ margin-bottom:10px; }
+	}
+}
+
+.gray{
+	color:gray;
+}
+
+td.time{
+	background-color:#EEE;
+	text-align:center;
+	font-size:16px;
+	width:180px;
+}
+
+td.status{
+	width:180px;
+}
+
+.no-margin-and-padding{
+	padding:0px !important;
+	margin:0px !important;
+	margin-bottom:-50px !important;	
+	.btn{
+		width:200px;
+		margin:10px auto;
+	}
+}
+
+.form-wrapper{
+	padding:40px 80px;
+	background-color:#EAEAEA;
+	div.form-shape{
+		padding:40px;
+		background-color:white;
+	}
+}
+
+.big-clock{
+	h1{
+		color:#34a0ed;
+	}
+	background-color:#f2f7fb;
+	border-bottom:solid 2px #34a0ed;
+	padding:40px;
+	text-align:center;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.form-shape{
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+@media screen and (min-width:1100px){
+	.form-shape,.big-clock{
+		width:760px;
+		margin:auto;
+	}
+}
+
+.select-inner{
+	margin:10px 0px;
+	select{
+		width:100%;
+		display:block;
+	}
+}
+
+.big-clock-red{
+	h1{ 
+		color:#b85e80; 
+		font-size:20px;
+		text-transform:uppercase;
+		font-weight:700;
+	}
+	background-color:#FAF0F0;
+	border-bottom-color:#b85e80;
+}
+
+.credit-report-box{
+	border:solid 1px #CCC;
+	border-bottom:solid 1px #666;
+	border-radius:5px;
+	padding:30px;
+	margin-bottom:20px;
+	width:48%;
+	h6.company-name{
+		font-size:16px;
+		color:#34a0ed;
+		width:80%;
+		margin:auto;
+		text-transform:uppercase;
+		text-align:center;
+		font-size:14px;
+	}
+	dl.dl-horizontal{
+		width:100% !important;
+		font-size:14px;
+		text-transform:uppercase;
+		margin-bottom:0px;
+		dt{ width:80px; }
+		dd{ margin-left:100px; width:100px; }
+		.classy-loader-wrapper{
+			padding-top:20px;
+		}
+	} 
+}
+
+.credit-report-box-left{
+	margin-right:1%;
+}
+
+.credit-report-box-right{
+	margin-left:1%;
+}
+
+@media screen and (max-width: 1000px){
+	.credit-report-box{
+		width:90%;
+		margin-left:5%;
+		margin-right:5%;
+		margin:auto;
+		margin-bottom:20px;
+	}
+}
+
+.credit-report-box-full{
+	width:500px !important;
+	display:block;
+	margin:auto !important;
+	float:none;
+}
+
+.appointment-credit-instructions{
+	margin-top:40px;
+	.gray{
+		margin-bottom:10px;
+	}
+}

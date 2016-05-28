@@ -1,0 +1,16 @@
+<div class="wrapper">
+
+<div class="mdx-form">
+<%= form_tag execute_mdx_path, method: :post do %>
+<%= text_area_tag :mdx, params[:mdx] %>
+<%= submit_tag "EXECUTAR", :class => "button" %>
+<% end %>
+</div>
+
+<div class="mdx-table">
+	<% if @data %>
+	<%= @data.to_html(formatted: true).html_safe %>
+	<% end %>
+</div>
+
+</div>

@@ -1,56 +1,41 @@
 Rails.application.routes.draw do
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+	
+	# admin webservice
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  get '/admin/users/auto-complete' => 'admin/users#search'
+  ActiveAdmin.routes(self)
+  get '/admin/trips/:id/get_board_places' => 'admin/trips#get_board_places', as: 'get_board_places_admin_trips'
+  
+  devise_for :users, :controllers => { :registrations => "users/registrations" }
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  # user routes
+  get '/minhas-compras' => 'users#index', as: 'user_orders'
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+  root to: 'index#index'
 
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+  get '/agenda' => 'schedule#index', as: 'schedule'
+  get '/trip/:url' => 'trips#index', as: 'trip'
+  get '/termos-de-uso' => 'application#terms', as: 'terms'
+  get '/viaje-sem-duvidas' => 'application#doubts', as: 'doubts'
+  get '/fale-conosco' => 'application#contact', as: 'contact'
+  
+  # checkout
+  get '/compra/:url' => 'checkout#new', as: 'checkout'
+  post '/compra/:url' => 'checkout#create', as: 'create_order'
 
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+  # 
+  get '/pagamento/:id_hash' => 'checkout#payment', as: 'payment'
+  get '/atualizar-e-voltar-para-compra' => 'checkout#update_and_go_back_to_checkout', as: 'update_and_go_back_to_checkout'
 
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
+  # notifications pagseguro
+  post '/pagseguro' => 'pagseguro#create', as: 'pagseguro'
+  get '/detalhes-compra/:id_hash' => 'orders#show', as: 'order_return'
+  get '/detalhes-compra' => 'orders#show'
 
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
+  # cronjob pre-trip
+  get '/pre-trip-mailer' => 'order#pre_trip_mailer'
 
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
+  # email marketing
+  get '/email-marketing' => 'mailchimp#subscribe', as: 'email_marketing'
 
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
 end

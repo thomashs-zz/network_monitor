@@ -1,0 +1,45 @@
+#calendar {
+	width: 100%;
+	margin: 0 auto;
+	margin-top: -10px;
+	.fc-day-number{
+		padding-right:10px;
+		padding-top:5px;
+	}
+	tr{
+		border:none !important;
+		th{
+			border:none !important;
+			text-align:center;
+			color:#CCCCCC;
+			text-transform:uppercase;
+			padding:10px;
+		}
+	}
+	.fc-toolbar{
+		margin-bottom:40px;
+	}
+	.fc-center h2{
+		font-size:18px;
+		text-transform:capitalize;
+	}
+	.fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed hr, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead{
+		border:solid 1px #CCCCCC !important;
+	}
+}
+
+.fc-slats tr td { height: 40px; }
+
+a.fc-event:hover{
+	opacity: 0.8;
+  filter: alpha(opacity=80); 
+}
+
+.fc-time{
+	text-align:center;
+	font-size:12px !important;
+}
+
+.fc-title{
+	text-align:center;
+}

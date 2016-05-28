@@ -1,14 +1,175 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Triptri</title>
+  <title>Trip Tri<%= content_for?(:title)? " - #{yield(:title)}" : "" %> - Grupo de Viagens Econômicas</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+
+  <!-- Open Graph Tags /-->
+  <% if content_for? :og %>
+  <%= yield :og %>
+  <% else %>
+  <meta property="og:url" content="http://www.triptri.com.br" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Trip Tri" />
+	<meta property="og:description" content="Somos referência em viagens sócio-econômicas por destinos turísticos dentro e fora do RS, agregando amigos a cada nova rota." />
+	<meta property="og:image" content="<%= image_path('og.png') %>" />
+  <% end %>
+
 </head>
 <body>
+	
+	<% if notice %>
+		<div class="notice">
+			<div class="wrapper">
+				<%= notice %>
+			</div>
+		</div>
+	<% end %>
+	<% if alert %>
+		<div class="alert">
+			<div class="wrapper">
+				<%= alert %>
+			</div>
+		</div>
+	<% end %>
+	
+	<header>
+		<div id="header-menu">
+			<div class="wrapper row">
+				<div class="three columns">
+					<em>Grupo de viagens econômicas.</em>
+				</div>
+				<div class="two columns">
+					<b><%= @triptri_settings.website_phone %></b>
+				</div>
+				<div class="seven columns text-right">
+					<% unless user_signed_in? %>
+						<%= link_to "Cadastre-se", new_user_registration_path %> 
+						&nbsp; &middot; &nbsp; 
+						<%= link_to "Login", new_user_session_path %>
+						<% else %>
+						Olá <%= current_user.name %> 
+						&nbsp; &middot; &nbsp; 
+						<%= link_to 'Editar meus dados', edit_user_registration_path %> 
+						&nbsp; &middot; &nbsp; 
+						<%= link_to 'Minhas Compras', user_orders_path %> 
+						&nbsp; &middot; &nbsp; 
+						<%= link_to 'Sair', destroy_user_session_path %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		<div id="main-menu-bar">
+			<div class="row wrapper">
+				<div class="logo three columns">
+					<%= link_to root_path do %>
+						<%= image_tag "logo.png" %>
+					<% end %>
+				</div>
+				<div class="main-menu six columns">
+					<ul class="horizontal-menu">
+						<li><%= fancy_link_to "Início", root_path %></li>
+						<li><%= fancy_link_to "Agenda", schedule_path %></li>
+						<li><%= fancy_link_to "Viaje sem Dúvidas", doubts_path %></li>
+						<li><%= fancy_link_to "Fale Conosco", contact_path %></li>
+					</ul>
+				</div>
+				<div class="three columns">
+					<ul class="social-networks pull-right">
+						<li><a target="_blank" href="https://www.facebook.com/triptridestinos"><%= image_tag 'icon-facebook' %></a></li>
+						<li class="youtube"><a target="_blank" href="https://www.youtube.com/channel/UCUIhLJLjMo18XnZS96-uALA"><%= image_tag 'icon-youtube' %></a></li>
+						<li><a target="_blank" href="https://www.instagram.com/trip.tri/"><%= image_tag 'icon-instagram' %></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</header>
 
-<%= yield %>
+	<% if content_for?(:page_title) %>
+	<div id="page-title">
+		<div class="wrapper">
+			<div class="pull-right">
+				<%= yield(:page_button) %>
+			</div>
+			<h1><%= yield(:page_title) %></h1>
+		</div>
+	</div>
+	<% end %>
+
+	<%= yield %>
+
+	<footer>
+		<div id="footer-bar">
+			<div class="menu-bar wrapper row">
+				<div class="ten columns">
+					<ul class="horizontal-menu">
+						<li><%= fancy_link_to "Início", root_path %></li>
+						<li><%= fancy_link_to "Agenda", schedule_path %></li>
+						<li><%= fancy_link_to "Termos de Uso", terms_path %></li>
+						<li><%= fancy_link_to "Viaje sem Dúvidas", doubts_path %></li>
+						<li><%= fancy_link_to "Fale Conosco", contact_path %></li>
+					</ul>
+				</div>
+				<div class="two columns">
+					<ul class="social-networks pull-right">
+						<li><a target="_blank" href="https://www.facebook.com/triptridestinos"><%= image_tag 'icon-facebook' %></a></li>
+						<li class="youtube"><a target="_blank" href="https://www.youtube.com/channel/UCUIhLJLjMo18XnZS96-uALA"><%= image_tag 'icon-youtube' %></a></li>
+						<li><a target="_blank" href="https://www.instagram.com/trip.tri/"><%= image_tag 'icon-instagram' %></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="footer-logo" class="wrapper row">
+			<div class="eight columns logo">
+				<%= link_to root_path do %>
+					<%= image_tag "logo.png" %>
+				<% end %>
+			</div>
+			<div class="four columns text-right cards">
+				<%= image_tag 'icon-cards.png' %>
+			</div>
+		</div>
+		<div id="footer-message">
+			<div class="wrapper row">
+				<div class="five columns">
+					<p><%= @triptri_settings.website_footer_message.html_safe %></p>
+				</div>
+			</div>
+		</div>
+		<div id="footer-signature">
+			<div class="wrapper row">
+				<p>
+					<b>Trip Tri Destinos LTDA.</b><br/>
+					CNPJ 19.221.236/0001-86<br/>
+					Rua Professor Cecy Cordeiro Thofhern, 165<br/>
+					Bairro Sarandi, Porto Alegre - RS - Brasil<br/>
+					<b><%= @triptri_settings.website_phone %></b>
+				</p>
+			</div>
+		</div>
+	</footer>
+
+	<%= yield(:js) %>
+
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-76226024-1', 'auto');
+  ga('send', 'pageview');
+	</script>
 
 </body>
 </html>

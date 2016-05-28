@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="login-bg">
+<head>
+	<title>RS SAÚDE - INTRANET</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="<%= image_path('favicon.png') %>" />
+	<%= stylesheet_link_tag("application") %>
+  <!-- this page specific styles -->
+  <%= stylesheet_link_tag("scss/signup") %>
+  <!-- open sans font -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' />
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <!-- notices /-->
+  <% if notice %>
+  <div class="alert alert-success alert-top">
+    <i class="fa fa-check"></i>
+    <%= notice %>
+  </div>
+  <% end %>
+  <% if alert %>
+  <div class="alert alert-danger alert-top">
+    <i class="fa fa-times"></i>
+    <%= alert %>
+  </div>
+  <% end %>
+  <div class="header">
+    <%= link_to root_path do %>
+      <%= image_tag "logo.png", alt: "logo", class: "logo" %>
+    <% end %>
+  </div>
+  <div class="login-wrapper">
+    <%= yield %>
+  </div>  
+  <%= render partial: 'partials/ga' %>
+</body>
+</html>

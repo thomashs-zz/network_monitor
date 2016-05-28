@@ -1,0 +1,62 @@
+<div class="wrapper">
+	
+	<div class="row rs-header">
+		<div class="col-md-8">
+			<h3><%= @report.name %></h3>
+		</div>
+		<div class="col-md-4 text-right">
+			<%= link_to '&larr; VOLTAR'.html_safe, root_path, :class => 'btn btn-primary' %>
+			<%= link_to 'REMOVER'.html_safe, report_path(@report), method: :delete, :class => 'btn btn-danger', :onclick => 'javascript: return confirm("Tem certeza?");' %> 
+			<%= link_to 'EDITAR'.html_safe, edit_report_path(@report), :class => 'btn btn-info' %> 
+		</div>
+	</div>
+	
+	<% @report.report_queries.each do |rq| %>
+	<div class="report-query">
+		<h3><%= rq.title %></h3>
+		<h4><%= rq.subtitle %></h4>
+
+		<% if rq.report_type != 'somente_tabela' %>
+		<div class="report-wrapper">
+
+		</div>
+		<% end %>
+
+		<% if rq.report_type != 'somente_tabela' %>
+		<div class="chart-container" id="chart-container-<%= rq.id %>"></div>
+		<% end %>
+
+		<div class="table-wrapper">
+			<%= rq.get_html_table.html_safe %>
+		</div>
+
+	</div>
+	<% end %>
+
+</div>
+
+<% content_for :js do %>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script type="text/javascript">
+
+	function set_id_to_tables(){
+
+	}
+
+	$(function(){
+		format_dw_table();
+		$.each($('table'),function(i,the_table){
+			var the_id = $(the_table).attr("data-id");
+			var chart_type = $(the_table).attr("chart-type");
+			if(chart_type != "somente_tabela"){
+				$("#chart-container-"+the_id).highcharts({
+					data: { table: "data-table-"+the_id },
+		      chart: { type: chart_type },
+		      title: false
+				});
+			}
+		});
+	});
+</script>
+<% end %>

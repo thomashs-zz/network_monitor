@@ -1,0 +1,11 @@
+<div class="wrapper">
+	<div class="row rs-header">
+		<div class="col-md-8">
+			<h3>Editar Relatório</h3>
+		</div>
+		<div class="col-md-4 text-right">
+			<%= link_to '&larr; Voltar'.html_safe, report_path(@report), :class => 'btn btn-primary' %>
+		</div>
+	</div>
+	<%= render partial: 'form' %>
+</div>

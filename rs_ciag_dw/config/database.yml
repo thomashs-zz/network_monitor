@@ -1,0 +1,17 @@
+development:
+  adapter: postgresql
+  encoding: utf8
+  reconnect: false
+  host: localhost
+  database: rssaude_intranet_gm_dev
+  pool: 5
+
+production:
+  adapter: postgresql
+  host: localhost
+  username: postgres
+  database: rssaude_intranet_gm_production
+  password: rssaude_201338119237892-81237
+  pool: 5
+  timeout: 5000
+  encoding: utf8

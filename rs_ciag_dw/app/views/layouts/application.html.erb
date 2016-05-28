@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RS SAÚDE - INTRANET<%= " " + @html_title if @html_title %></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="<%= image_path('favicon.png') %>" />
+  <%= stylesheet_link_tag "application", :media => "all" %>  
+  <!-- this page specific styles -->
+  <%= stylesheet_link_tag "scss/external", :media => "all" %>
+  <%= stylesheet_link_tag "scss/index", :media => "all" %>
+
+  <!-- open sans font -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' />
+  <!-- lato font -->
+  <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css' />
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <%= csrf_meta_tags %>
+  <%= yield :header %>
+</head>
+  <body>
+      
+    <!-- navbar -->
+    <div class="navbar-inverse">
+      <div class="row external-navbar">
+        <div class="col-xs-6">
+          <%= link_to root_path do %>
+          <%= image_tag "logo.png", alt: "logo", :class => "logo-external" %>
+          <% end %>
+        </div>
+        <div class="col-xs-6">
+          <% if user_signed_in? %>
+          <ul class="nav navbar-nav pull-right hidden-xs">
+            <li class="settings hidden-xs hidden-sm">
+              <a role="button" href="#"><%= current_user.name %></a>
+            </li>
+            <li class="settings hidden-xs hidden-sm">
+              <%= link_to destroy_user_session_path, :role => "button" do %>
+              <i class="fa fa-times"></i>
+              <% end %>
+            </li>
+          </ul>
+          <% end %>
+        </div>
+      </div>
+      
+    </div>
+    <!-- end navbar -->
+
+    <!-- main container -->
+    <div class="content content-external">
+      <!-- notices /-->
+      <% if notice %>
+      <div class="alert alert-success alert-top">
+        <i class="fa fa-check"></i>
+        <%= notice %>
+      </div>
+      <% end %>
+      <% if alert %>
+      <div class="alert alert-danger alert-top">
+        <i class="fa fa-times"></i>
+        <%= alert %>
+      </div>
+      <% end %>
+      <%= yield %>
+    </div>
+    <div class="rs-signature">
+      <b>RS Saúde</b><br/>
+      Rua Uruguai, 155 - conj 901<br/>
+      Bairro Centro Histórico<br/>
+      Porto Alegre - RS - Brasil<br/>
+      CEP 90010-140
+    </div>
+
+    <!-- scripts -->
+    <!--<script src="http://code.jquery.com/jquery-latest.js"></script>/-->
+
+    <%= javascript_include_tag("application") %>
+
+    <%= yield :js %>
+    <% if content_for? :js_block %>
+    <script type="text/javascript">
+      <%= yield :js_block %>
+    </script>
+    <% end %>
+
+    <%= render partial: 'partials/ga' %>
+    
+</body>
+</html>

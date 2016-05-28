@@ -1,0 +1,19 @@
+<div class="wrapper">
+	<div class="row rs-header">
+		<div class="col-md-8">
+			<h3>Relatórios</h3>
+		</div>
+		<div class="col-md-4 text-right">
+		<%= link_to 'Novo relatório', new_report_path, :class => 'btn btn-success' %>
+		</div>
+	</div>
+	<% if @reports.size > 0 %>
+		<% @reports.each do |report| %>
+		<%= link_to report.name, report_path(report), :class => 'big-link' %>
+		<% end %>
+	<% else %>
+	<div class="empty">
+		Não há relatórios cadastrados.
+	</div>
+	<% end %>
+</div>

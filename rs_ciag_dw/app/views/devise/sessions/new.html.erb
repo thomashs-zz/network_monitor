@@ -1,0 +1,26 @@
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+<div class="box">
+  <div class="content-wrap">
+    <% resource.email = 'contato@thomashs.com.br' if Rails.env == 'development' %>
+    <%= f.email_field :email, :autofocus => true, :class => 'form-control', :placeholder => 'E-mail' %>
+    <%= f.password_field :password, :placeholder => 'Sua senha', :class => 'form-control' %>
+    <% if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+  		<%= link_to "Esqueceu sua senha?", new_password_path(resource_name), :class => "forgot" %><br />
+		<% end %>
+    <% if devise_mapping.rememberable? -%>
+    	<div class="remember form-grouop">
+        <label class="checkbox-inline">
+          <%= f.check_box :remember_me, :id => "remember-me" %> Lembre-se de mim
+        </label>
+    	</div>
+  	<% end %>
+  	<%= f.submit "Entrar", :class => "btn-glow primary login" %>
+  </div>
+</div>
+<% end %>
+<% if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+<div class="no-account">
+  <p>Conta bloqueada?</p> <%= link_to "Siga estas instruções", new_unlock_path(resource_name) %>.
+</div>
+<% end %>
+    

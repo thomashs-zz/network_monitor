@@ -1,0 +1,85 @@
+<% content_for :header  do %>
+<%= stylesheet_link_tag "scss/new-user" %>
+<% end %>
+
+<div class="row form-wrapper">
+	<div class="col-md-12">
+		<%= nested_form_for @report, :html => { :class => "form-horizontal", :role => "form" } do |f| %>
+			
+			<div class="form-group">
+				<%= f.label :name, :class => "col-md-2 control-label" %>
+				<div class="col-md-8">
+					<%= f.text_field :name, class: 'form-control' %>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<%= f.label :relevance, :class => "col-md-2 control-label" %>
+				<div class="col-md-1">
+					<%= f.number_field :relevance, class: 'form-control' %>
+				</div>
+			</div>
+
+			<div id="report_queries">
+				<%= f.fields_for :report_queries do |ff| %>
+					<div class="nested-form">
+						<br/>
+						<div class="form-group">
+							<%= ff.label :title, :class => "col-md-2 control-label" %>
+							<div class="col-md-8">
+								<%= ff.text_field :title, class: 'form-control' %>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<%= ff.label :subtitle, :class => "col-md-2 control-label" %>
+							<div class="col-md-4">
+								<%= ff.text_field :subtitle, class: 'form-control' %>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<%= ff.label :query, :class => "col-md-2 control-label" %>
+							<div class="col-md-8">
+								<%= ff.text_area :query, class: 'form-control', rows: 10 %>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<%= ff.label :report_type, :class => "col-md-2 control-label" %>
+							<div class="col-md-8">
+								<%= ff.select :report_type, ReportQuery.report_types, class: 'form-control' %>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<%= ff.label :relevance, :class => "col-md-2 control-label" %>
+							<div class="col-md-1">
+								<%= ff.number_field :relevance, class: 'form-control' %>
+							</div>
+						</div>
+
+						<label class="checkbox-inline">
+				      <%= ff.check_box "_destroy" %> Remover ao salvar
+				    </label>
+
+					</div>
+				<% end %>
+			</div>
+
+			<div class="form-group">
+	      <div class="col-md-12">
+	        <%= f.link_to_add "+ ADICIONAR QUERY".html_safe, :report_queries, :class => "btn btn-flat white" %>
+	      </div>
+	    </div>
+
+	    <div class="form-group">
+    	<hr/>
+			<div class="col-md-8">
+				<button type="submit" class="btn btn-flat btn-lg success">SALVAR</button>
+			</div>
+		</div>
+
+		<% end %>
+	</div>
+</div>
