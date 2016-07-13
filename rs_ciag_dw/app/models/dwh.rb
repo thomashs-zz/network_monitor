@@ -60,7 +60,7 @@ class Dwh
         hierarchy :has_all => true, :all_member_name => 'Todos os Tipos', :primary_key => 'dw_dim_treatment_types_id' do
           table 'dw_dim_treatment_types'
           level 'Descricao', :column => 'description', :unique_members => true
-          level 'slug', :column => 'slug', :unique_members => true
+          level 'slug', :column => 'slug', :unique_members => false
         end
       end
 
@@ -78,6 +78,10 @@ class Dwh
           table 'dw_dim_cid10s'
           level 'Grupo', :column => 'group_description', :unique_members => true
           level 'Descricao', :column => 'description', :unique_members => false
+          level 'Codigo', :column => 'code', :unique_members => true
+        end
+        hierarchy 'Codigo', :has_all => true, :all_member_name => 'Todos', :primary_key => 'dim_cid10s_id' do 
+          table 'dw_dim_cid10s'
           level 'Codigo', :column => 'code', :unique_members => true
         end
       end
@@ -102,13 +106,21 @@ class Dwh
           level 'Tipo de Acidente', :column => 'event_type', :unique_members => false
           level 'Classificao Acidente', :column => 'accident_classification', :unique_members => false
         end
+        hierarchy 'Usava Equipamento de Seguranca', :has_all => true, :all_member_name => 'Todas', :primary_key => 'dw_dim_accident_investigations_id' do
+          table 'dw_dim_accident_investigations'
+          level 'Usava Equipamento de Seguranca', :column => 'was_using_epi', :unique_members => false
+        end
       end
 
       dimension 'Triagens', :foreign_key => 'dw_dim_screening_id' do
         hierarchy :has_all => true, :all_member_name => 'Todas', :primary_key => 'dw_dim_screening_id' do
           table 'dw_dim_screening'
           level 'Pressao Alta', :column => 'high_blood_pressure', :unique_members => true
-          level 'Nivel Manchester', :column => 'manchester_level', :unique_members => false
+          level 'Nivel Manchester', :column => 'manchester_level', :unique_members => true
+        end
+        hierarchy 'Nivel Manchester', :has_all => true, :all_member_name => 'Todas', :primary_key => 'dw_dim_screening_id' do
+          table 'dw_dim_screening'
+          level 'Nivel Manchester', :column => 'manchester_level', :unique_members => true
         end
       end
 
@@ -119,6 +131,10 @@ class Dwh
           level 'Apto para Trabalhar', :column => 'is_able', :unique_members => true
           level 'Queixa Osteomuscular', :column => 'osteomuscular_complaint', :unique_members => false
           level 'Lado da Queixa', :column => 'osteomuscular_complaint_side', :unique_members => true
+        end
+        hierarchy 'Apto para trabalhar', :has_all => true, :all_member_name => 'Todos', :primary_key => 'dw_occupational_treatments_id' do
+          table 'dw_dim_occupational_treatments'
+          level 'Apto para Trabalhar', :column => 'is_able', :unique_members => true
         end
       end
 
@@ -142,12 +158,16 @@ class Dwh
       end
 
       dimension 'Ocorrencias', :foreign_key => 'dw_dim_accident_treatments_id' do
-        hierarchy :has_all => true, :all_member_name => true, :primary_key => 'dw_dim_accident_treatments_id' do
+        hierarchy :has_all => true, :all_member_name => 'Todas', :primary_key => 'dw_dim_accident_treatments_id' do
           table 'dw_dim_accident_treatments'
           level 'Origem da Lesao', :column => 'origin_of_injury', :unique_members => false
           level 'Parte do Corpo Atingida', :column => 'body_matrix', :unique_members => false
           level 'Afastamento', :column => 'period_away', :unique_members => false
           level 'Tipo de Afastamento', :column => 'away_type', :unique_members => false
+        end
+        hierarchy 'Afastamento', :has_all => false, :all_member_name => 'Todas', :primary_key => 'dw_dim_accident_treatments_id' do
+          table 'dw_dim_accident_treatments'
+          level 'Afastamento', :column => 'period_away', :unique_members => false
         end
       end
       
@@ -283,9 +303,10 @@ class Dwh
       end
 
       measure 'Total', :column => 'total', :aggregator => 'sum'
-      measure 'Cancelados', :column => 'cancel_total', :aggregator => 'avg'
-      measure 'Duracao esperada min', :column => 'expected_duration_in_minutes', :aggregator => 'avg'
-      measure 'Duracao em min', :column => 'actual_appointment_duration_in_minutes', :aggregator => 'avg'
+      measure 'Cancelados', :column => 'cancel_total', :aggregator => 'sum'
+      measure 'Duracao Minima', :column => 'expected_duration_in_minutes', :aggregator => 'min'
+      measure 'Duracao Maxima', :column => 'expected_duration_in_minutes', :aggregator => 'max'
+      measure 'Duracao Media', :column => 'expected_duration_in_minutes', :aggregator => 'avg'
       measure 'Workflow min', :column => 'total_workflow_duration_in_minutes', :aggregator => 'avg'
 
     end
@@ -327,8 +348,13 @@ class Dwh
 
       dimension 'Periodo', :foreign_key => 'dw_dim_medical_certificate_time_frames_id' do
         hierarchy :has_all => true, :all_member_name => 'Todos', :primary_key => 'dw_dim_medical_certificate_time_frames_id' do
-          table 'dw_dim_medical_certificate_time_frames_id'
-          level 'Description', :column => 'description', :unique_members => true
+          table 'dw_dim_medical_certificate_time_frames'
+          level 'Descricao', :column => 'description', :unique_members => true
+          level 'Dias', :column => 'duration_in_days', :unique_members => true
+        end
+        hierarchy 'Dias', :has_all => false, :primary_key => 'dw_dim_medical_certificate_time_frames_id' do
+          table 'dw_dim_medical_certificate_time_frames'
+          level 'Dias', :column => 'duration_in_days', :unique_members => true
         end
       end
 
@@ -344,7 +370,11 @@ class Dwh
         hierarchy :has_all => true, :all_member_name => 'Todos', :primary_key => 'dim_cid10s_id' do
           table 'dw_dim_cid10s'
           level 'Grupo', :column => 'group_description', :unique_members => true
+          level 'Codigo', :column => 'code', :unique_members => true
           level 'Descricao', :column => 'description', :unique_members => false
+        end
+        hierarchy 'Codigo', :has_all => true, :all_member_name => 'Todos', :primary_key => 'dim_cid10s_id' do 
+          table 'dw_dim_cid10s'
           level 'Codigo', :column => 'code', :unique_members => true
         end
       end
@@ -371,8 +401,13 @@ class Dwh
       dimension 'Medico', :foreign_key => 'dw_dim_doctors_id' do
         hierarchy :has_all => true, :all_member_name => 'Todos', :primary_key => 'dw_dim_doctors_id' do
           table 'dw_dim_doctors'
-          level 'Name', :column => 'name', :unique_members => true
+          level 'Nome', :column => 'name', :unique_members => true
           level 'CRM', :column => 'crm', :unique_members => true
+          level 'Tipo', :column => 'doctor_type', :unique_members => true
+        end
+        hierarchy 'Tipo', :has_all => false, :primary_key => 'dw_dim_doctors_id' do
+          table 'dw_dim_doctors'
+          level 'Tipo', :column => 'doctor_type', :unique_members => true
         end
       end
 
@@ -384,7 +419,7 @@ class Dwh
       end
 
       measure 'Total', :column => 'total', :aggregator => 'sum'
-
+      
     end
 
   end
