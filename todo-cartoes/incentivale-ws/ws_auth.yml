@@ -1,0 +1,6 @@
+INCENTIVALE_TOKEN: ece0b98e60a64b0d8018a958eb0994c8
+INCENTIVALE_ENVIAR_PEDIDO_URL: https://central.incentivale.com.br/api/v2/addresquest
+INCENTIVALE_TRACKING_DO_PEDIDO_URL: https://central.incentivale.com.br/api/v2/findtracking
+APP_MANAGER_UPDATE_LOGISTIC_STATUS_URL: https://apps.todocartoes.com.br/api/orders/update-logistic-status
+APP_MANAGER_API_KEY: 6a9162e917416c04d77ffa1b5893a0b7cb218156
+APP_MANAGER_GET_LOGISTIC_STATUS_URL: https://apps.todocartoes.com.br/api/orders/get-logistic-status

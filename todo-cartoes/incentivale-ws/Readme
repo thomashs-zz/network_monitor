@@ -1,0 +1,22 @@
+=== Readme
+  
+This is a webservice for the integration of Incentivale Service with the App Manager.  
+  
+Docs of Incentivale API:  
+https://central.incentivale.com.br/apiv2  
+  
+== Routes implemented  
+  
+POST 
+/create-order  
+(parses JSON of App Manager to Enviar Pedido)
+  
+endpoint contract:
+  
+
+  
+== Routines
+  
+This Webservice must ask for the status 
+
+== 

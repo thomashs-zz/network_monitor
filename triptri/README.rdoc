@@ -1,7 +1,0 @@
-== README
-
-- Unicorn
-- migrate database
-
-Para rodar o livereload em desenvolvimento:
-guard -P livereload
