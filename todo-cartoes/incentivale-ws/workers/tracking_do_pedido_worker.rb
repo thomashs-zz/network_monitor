@@ -66,8 +66,16 @@ class TrackingDoPedidoWorker
 				# 8 - OUTRO 
 				# 9 - AGUARDANDO RETIRADA NA AGÊNCIA 
 
+				# APP MANAGER
+				# 'Iniciado' => 'iniciado',
+		  	# 'Codificado' => 'codificado',
+		    # 'Enviado' => 'enviado',
+		    # 'Entregue' => 'entregue',
+		    # 'Devolvido' => 'devolvido',
+		    # 'Reenviado' => 'reenviado'
+
 				'1' => '',
-				'2' => '',
+				'2' => 'codificado',
 				'3' => '',
 				'4' => '',
 				'5' => '',
@@ -88,16 +96,19 @@ class TrackingDoPedidoWorker
 			if response_json['success'] and response_json['status'] != status_translated
 
 				#
-				# sends 'iniciado' to app manager
+				# sends status to app manager
 				#
 				data = {
 					'identifier' => json['order']['identifier'],
 					'status' => status_translated,
-					'code' => '' # PRECISA COLOCAR CODE DE TRACKING AQUI,
+
+					## ================= 
+					'code' => '' # PRECISA COLOCAR CODE DE TRACKING AQUI TALVEZ, ver: https://central.incentivale.com.br/apiv2
 					'metadata' => {
 						'colocar todos os dados do response' => 'aqui',
-						'lalala' => 'xxx'
+						'description' => 'xxx'
 					}
+					## =================
 				}
 				headers = {
 					'Authorization' => "Token #{APP_MANAGER_API_KEY}",
