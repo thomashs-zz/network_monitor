@@ -1,0 +1,32 @@
+<%= form_for @device, :html => { :class => "form-horizontal", :role => "form" } do |f| %>
+	<%= custom_error_messages_for(@device) %>
+	<div class="form-group">
+    <%= f.label :name, :class => 'col-sm-2 control-label' %>
+    <div class="col-sm-6">
+    	<%= f.text_field :name, :class => 'form-control', :placeholder => 'Name of the Device' %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.label :ip, :class => 'col-sm-2 control-label' %>
+    <div class="col-sm-2">
+    	<%= f.text_field :ip, :class => 'form-control', :placeholder => 'IP Address' %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.label :community, :class => 'col-sm-2 control-label' %>
+    <div class="col-sm-4">
+    	<%= f.text_field :community, :class => 'form-control', :placeholder => 'SNMP Community' %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.label "Frequency (secs)", :class => 'col-sm-2 control-label' %>
+    <div class="col-sm-1">
+    	<%= f.number_field :frequency, :class => 'form-control', :placeholder => 'Secs.' %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <%= f.submit "Save", :class => 'btn btn-success' %>
+    </div>
+  </div>
+<% end %>

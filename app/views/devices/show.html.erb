@@ -1,0 +1,282 @@
+<div class="page-header">
+	<div class="pull-right">
+		<h3 id="link-status">Up</h3>
+		<small>Link Staus</small>
+	</div>
+	<h1><%= @device.name %></h1>
+	<h5><%= @device.ip %></h5>
+</div>
+
+<div class="row">
+
+	<div id="link_graphs"></div>
+
+	<div class="col-md-6">
+    <h4 class="title pull-left">
+			IP Datagrams <small>IN and OUT</small>
+    </h4>
+    <div class="span6">
+    	<div id="ip-in-out" class="line-chart"></div>
+  	</div>
+  </div>
+
+	<div class="col-md-6">
+    <h4 class="title pull-left">
+			TCP Datagrams <small>IN and OUT</small>
+    </h4>
+    <div class="span6">
+    	<div id="tcp-in-out" class="line-chart"></div>
+  	</div>
+  </div>
+  <div class="col-md-6">
+    <h4 class="title pull-left">
+			UDP Datagrams <small>IN and OUT</small>
+    </h4>
+    <div class="span6">
+    	<div id="udp-in-out" class="line-chart"></div>
+  	</div>
+  </div>
+  <div class="col-md-6">
+    <h4 class="title pull-left">
+			ICMP Datagrams <small>IN and OUT</small>
+    </h4>
+    <div class="span6">
+    	<div id="icmp-in-out" class="line-chart"></div>
+  	</div>
+  </div>
+</div>
+
+<div class="row section">
+	<div class="col-md-12">
+		<h3>Configuration Table</h3>
+		<table id="config_table" class="table table-bordered table-rounded"></table>
+	</div>
+</div>
+
+<div class="row section">
+	<div class="col-md-12" id="interfaces_control">
+		
+	</div>
+</div>
+
+<hr/>
+<div>
+	<%= link_to "Edit", edit_device_path(@device), :class => "btn btn-default" %>
+	<%= link_to "Delete", device_path(@device), method: :delete, :prompt => "Are you sure?", :class => "btn btn-danger" %>
+</div>
+
+<%= javascript_include_tag "jquery.flot" %>
+<%= javascript_include_tag "jquery.flot.resize" %>
+<%= javascript_include_tag "jquery.flot.stack" %>
+<script type="text/javascript">
+	var run_path = "<%= run_path @device,:format => :json %>";
+	var last_request = null;
+	var max_items = 20;
+	var link_loaded = false;
+	// -------
+	function diff(var_name,data){
+		if(last_request == null) return 0;
+		else return data[var_name] - last_request[var_name];
+	}
+
+	//--- plot
+	var pos = 0;
+	function plot_lineChart(target_id,inn,out){
+		var ticks = []; for(var x=1;x<=max_items;x++) ticks.push([x+pos,(x+pos).toString()]);
+		$.plot($(target_id),
+			[ { data: inn, label: "In"}, { data: out, label: "Out" }], 
+			{
+				series: { lines: { show: true, lineWidth: 1, fill: true, fillColor: { colors: [ { opacity: 0.05 }, { opacity: 0.09 } ] } },
+        points: { show: true, lineWidth: 2, radius: 3 }, shadowSize: 0, stack: true, borderWidth: 2, borderColor: "#EAEAEA" },
+        grid: { hoverable: true, clickable: true, tickColor: "#eaeaea", borderWidth: 1, borderColor: "#EAEAEA" },
+      	legend: { labelBoxBorderColor: "#fff" },  
+        colors: ["green", "#30a0eb"],
+					xaxis: {
+						ticks: ticks,
+						font: { size: 12, family: "Open Sans, Arial", variant: "small-caps", color: "#9da3a9" } },
+          yaxis: { 
+           	ticks:3, tickDecimals: 0, font: {size:12, color: "#9da3a9"}}
+		});
+		pos++;
+	}
+
+	// Link
+
+	function load_LINK(data){
+		var content = "";
+		var is = data["IF-MIB::ifNumber.0"];
+		for(var i=1;i<=is;i++){
+			content += "<div class='col-md-12'>";
+			content += "<h4 class='title pull-left'>";
+			content += "	Link "+data["IF-MIB::ifDescr."+i]+" <small>IN and OUT</small>";
+	  	content += "</h4>";
+	  	content += "<div class='span6'>";
+	  	content += "	<div id='link-in-out-"+i+"' class='line-chart'></div>";
+			content += "</div>";
+			content += "</div>";
+		}
+		$("#link_graphs").html(content);
+		link_loaded = true;
+	}
+
+	var link_in = {};
+	var link_out = {};
+	function update_LINK(data,freq){
+		var content = "";
+		var is = data["IF-MIB::ifNumber.0"];
+		for(var i=1;i<=is;i++){
+			if(link_in[i] == undefined) link_in[i] = [];
+			if(link_out[i] == undefined) link_out[i] = [];
+		}
+		for(var i=1;i<=is;i++){
+			link_in[i].push([pos,diff("IF-MIB::ifInOctets."+i,data)]);
+			link_out[i].push([pos,diff("IF-MIB::ifOutOctets."+i,data)]);
+			if(link_in[i].length == max_items){
+				link_in[i].shift();
+				link_out[i].shift();
+			}
+		}
+		
+		console.log(link_in);
+		console.log(link_out);
+		for(var i=1;i<=is;i++)
+			plot_lineChart("#link-in-out-"+i,link_in[i],link_out[i]);
+	}
+
+	// IP (in and out)
+	var ip_in = [];
+	var ip_out = [];
+	function updateIP_INOUT(inn,out){
+		// ---
+		ip_in.push([pos,inn]);
+		ip_out.push([pos,out]);
+		if(ip_in.length == max_items){
+			ip_in.shift();
+			ip_out.shift();
+		}
+		plot_lineChart("#ip-in-out",ip_in,ip_out);
+	}
+
+	// TCP (in and out)
+	var tcp_in = [];
+	var tcp_out = [];
+	function updateTCP_INOUT(inn,out){
+		tcp_in.push([pos,inn]);
+		tcp_out.push([pos,out]);
+		if(tcp_in.length == max_items){
+			tcp_in.shift();
+			tcp_out.shift();
+		}
+		plot_lineChart("#tcp-in-out",tcp_in,tcp_out);	
+	}
+
+	// UDP (in and out)
+	var upd_in = [];
+	var udp_out = [];
+	function updateUDP_INOUT(inn,out){
+		upd_in.push([pos,inn]);
+		udp_out.push([pos,out]);
+		if(upd_in.length == max_items){
+			upd_in.shift();
+			udp_out.shift();
+		}
+		plot_lineChart("#udp-in-out",upd_in,udp_out);	
+	}
+
+	// ICMP (in and out)
+	var icmp_in = [];
+	var icmp_out = [];
+	function updateICMP_INOUT(inn,out){
+		icmp_in.push([pos,inn]);
+		icmp_out.push([pos,out]);
+		if(icmp_in.length == max_items){
+			icmp_in.shift();
+			icmp_out.shift();
+		}
+		plot_lineChart("#icmp-in-out",icmp_in,icmp_out);	
+	}
+
+	// CONFIG TABLE
+	function config_Table(data){
+		$("#config_table").html("");
+		var table = "";
+		$.each(data["config_table"],function(key,obj){
+			table += "<tr><td class='title'>"+key+"</td><td>"+obj+"</td></tr>";
+		});
+		$("#config_table").html(table);
+	}
+
+	// INTERFACES
+	/*
+	<h3>Interfaces Control</h3>
+	
+	*/
+	function update_Interfaces(data){
+		var is = data["IF-MIB::ifNumber.0"];
+		var content = "";
+		var items = [
+			"ifType",
+			"ifMtu",
+			"ifSpeed",
+			"ifOperStatus",
+			"ifInOctets",
+			"ifInErrors",
+			"ifOutOctets",
+			"ifOutErrors"
+		];
+		for(var i=0;i<is;i++){
+			content += "<h3>Interface "+data["IF-MIB::ifDescr."+(i+1)]+"</h3>";
+			content += "<table id='interfaces_control' class='table table-bordered table-rounded'>";
+			for(var ii=0;ii < items.length; ii++){
+				content += "<tr><td>"+items[ii]+"</td><td>"+data["IF-MIB::"+items[ii]+"."+(i+1)]+"</td></tr>";
+			}
+			content += "</table>";
+		}
+		$("#interfaces_control").html(content);
+	}
+
+	function update(data){
+		console.log(data);
+		update_LINK(data,<%= @device.frequency %>);
+		updateIP_INOUT(diff("IP-MIB::ipInReceives.0",data),diff("IP-MIB::ipOutRequests.0",data));
+		updateTCP_INOUT(diff("TCP-MIB::tcpInSegs.0",data),diff("TCP-MIB::tcpOutSegs.0",data));
+		updateUDP_INOUT(diff("UDP-MIB::udpInDatagrams.0",data),diff("UDP-MIB::udpOutDatagrams.0",data));
+		updateICMP_INOUT(diff("IP-MIB::icmpInMsgs.0",data),diff("IP-MIB::icmpOutMsgs.0",data));
+		config_Table(data);
+		update_Interfaces(data);
+		last_request = data;
+	}
+
+	var last_status = true;
+	function link_status(bool){
+		if(bool){
+			$("#link-status").css("color","green").html("Up <i class='glyphicon glyphicon-arrow-up'></i>");
+		} else {
+			$("#link-status").css("color","red").html("Down <i class='glyphicon glyphicon-arrow-down'></i>");
+		}
+		last_status = bool;
+	}
+	
+	
+
+	function run(){
+		try{
+			$.getJSON(run_path,function(data){
+				link_status(true);
+				if(link_loaded == false) load_LINK(data);
+				update(data);
+			});
+		} catch(err){
+			link_status(false);
+			console.log(err);
+		}
+	}
+
+	
+	$(function(){
+		setInterval(run,<%=@device.frequency%>*1000);
+		$(document).ajaxError(function(event,request,settings){
+			link_status(false);
+		});
+	});
+</script>
